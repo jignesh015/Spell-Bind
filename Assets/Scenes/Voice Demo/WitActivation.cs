@@ -5,6 +5,8 @@ public class WitActivation : MonoBehaviour
 {
     [SerializeField]
     private AppVoiceExperience _voiceExperience;
+
+    private bool isActivated;
     private void OnValidate()
     {
         if (!_voiceExperience) _voiceExperience = GetComponent<AppVoiceExperience>();
@@ -29,7 +31,9 @@ public class WitActivation : MonoBehaviour
     /// </summary>
     public void ActivateWit()
     {
+        isActivated = true;
         _voiceExperience.Activate();
+        Debug.Log("Activate Wit");
     }
 
     /// <summary>
@@ -37,6 +41,12 @@ public class WitActivation : MonoBehaviour
     /// </summary>
     public void DeactivateWit()
     {
+        isActivated = false;
         _voiceExperience.Deactivate();
+    }
+
+    public bool IsActive()
+    {
+        return isActivated || _voiceExperience.MicActive;
     }
 }
