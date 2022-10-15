@@ -47,6 +47,6 @@ public class WitActivation : MonoBehaviour
 
     public bool IsActive()
     {
-        return isActivated || _voiceExperience.MicActive;
+        return _voiceExperience.MicActive;
     }
 }
