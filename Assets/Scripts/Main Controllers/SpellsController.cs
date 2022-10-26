@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using TMPro;
 
 namespace SpellBind
 {
@@ -10,6 +11,9 @@ namespace SpellBind
     {
         [SerializeField]
         private WandActionController wandActionController;
+
+        [Header("DEBUG")]
+        [SerializeField] private TextMeshProUGUI spellDebugText;
 
         // Start is called before the first frame update
         void Start()
@@ -82,6 +86,7 @@ namespace SpellBind
         {
             _command = _command.ToLower().Replace(".", "");
             Debug.LogFormat("Command Lower : {0}", _command);
+            spellDebugText.text = _command;
             if (SpellDictionary.flySpellDictionary.Contains(_command))
                 return Spells.Fly;
             else if (SpellDictionary.dropSpellDictionary.Contains(_command))
