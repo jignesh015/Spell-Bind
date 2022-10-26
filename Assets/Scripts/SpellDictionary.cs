@@ -19,26 +19,34 @@ namespace SpellBind
         {
             "drop", "shop", "prop", "door", "floor", "dry", "drape",
             "drake", "dance", "dark", "giraffe", "drank", "draft",
-            "craft", "car", "draw"
+            "craft", "car", "draw", "dropped", "dad", "got", "hot"
         };
         public static List<string> throwSpellDictionary = new List<string>()
         {
             "throw", "grow", "through", "thorough", "tough", "rough", "tree",
             "four", "sorrow", "two", "to", "too", "do", "sow", "bow", "device",
-            "sew", "saw", "thaw", "they", "the", "dough", "true"
+            "sew", "saw", "thaw", "they", "the", "dough", "true", "bro", "borrow",
+            "borough", "threw"
         };
         public static List<string> captureSpellDictionary = new List<string>()
         {
-            "capture","raptor","caricature","catch","hazard","rapture","wrapper",
-            "rapper","captcha", "snapchat", "snapper", "snatch", "snatcher"
+            "capture","raptor","caricature","catch", "rapture","wrapper",
+            "rapper","captcha", "snapchat", "snapper", "snatch", "snatcher",
+            "captured", "chair"
         };
         public static List<string> smashSpellDictionary = new List<string>()
         {
-            "smash", "dash","smell", "smack","snack", "snooze"
+            "smash", "dash", "smell", "smack", "snack", "snooze", "splash", "clash",
+            "smashed", "mash", "mesh", "mashed", "flash"
         };
         public static List<string> attackSpellDictionary = new List<string>()
         {
-            "attack", "okay", "cake", "bake", "jake", "erect", "select"
+            "attack", "attacked", "attach", "okay", "cake", "bake", "jake", "erect", 
+            "select", "hidec", "hitech", "deck", "hijack", "arab", 
+            "rehab", "attached", "ok", "hockey", "jockey", "attic", "adeck",
+            "acake", "hazard", "text", "adad", "contact", "adeck", "hundred",
+            "hidad", "heydad", "heyday", "mayday", "myriad", "arrange", "back",
+            "aback", "ihad", "accept", "except", "accident", "i'd", "iknow"
         };
     }
 }

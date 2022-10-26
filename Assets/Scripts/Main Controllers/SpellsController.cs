@@ -40,7 +40,10 @@ namespace SpellBind
             if (!string.IsNullOrEmpty(_command))
             {
                 Spells _spell = ValidateSpell(_command);
+
                 Debug.LogFormat("Spell : {0}", _spell.ToString());
+                spellDebugText.color = Color.green;
+
                 switch (_spell)
                 {
                     case Spells.Fly:
@@ -68,6 +71,7 @@ namespace SpellBind
                         wandActionController.onAttackSpell.Invoke();
                         break;
                     default:
+                        spellDebugText.color = Color.red;
                         break;
                 }
             }
@@ -84,9 +88,12 @@ namespace SpellBind
 
         private Spells ValidateSpell(string _command)
         {
-            _command = _command.ToLower().Replace(".", "");
+            //Remove special characters from the recognized command
+            _command = _command.ToLower().Replace(".", "").Replace(" ", "").Replace("-","");
+            
             Debug.LogFormat("Command Lower : {0}", _command);
             spellDebugText.text = _command;
+            
             if (SpellDictionary.flySpellDictionary.Contains(_command))
                 return Spells.Fly;
             else if (SpellDictionary.dropSpellDictionary.Contains(_command))
