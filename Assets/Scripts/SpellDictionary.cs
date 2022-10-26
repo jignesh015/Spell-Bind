@@ -25,7 +25,16 @@ namespace SpellBind
         {
             "throw", "grow", "through", "thorough", "tough", "rough", "tree",
             "four", "sorrow", "two", "to", "too", "do", "sow", "bow", "device",
-            "sew", "saw", "thaw", "they", "the", "dough"
+            "sew", "saw", "thaw", "they", "the", "dough", "true"
+        };
+        public static List<string> captureSpellDictionary = new List<string>()
+        {
+            "capture","raptor","caricature","catch","hazard","rapture","wrapper",
+            "rapper","captcha", "snapchat", "snapper", "snatch", "snatcher"
+        };
+        public static List<string> smashSpellDictionary = new List<string>()
+        {
+            "smash", "dash","smell", "smack","snack", "snooze"
         };
         public static List<string> attackSpellDictionary = new List<string>()
         {

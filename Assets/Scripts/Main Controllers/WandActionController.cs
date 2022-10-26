@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace SpellBind
 {
@@ -29,10 +31,27 @@ namespace SpellBind
         private float distanceToInteractable;
         #endregion
 
+        #region DELEGATES
+        public UnityAction onFlySpell;
+        public UnityAction onDropSpell;
+        public UnityAction onThrowSpell;
+        public UnityAction onCaptureSpell;
+        public UnityAction onSmashSpell;
+        public UnityAction onAttackSpell;
+        #endregion
+
         // Start is called before the first frame update
         void Start()
         {
             interactableLayerMask = LayerMask.GetMask(interactableLayerNames);
+
+            //Add listeners 
+            onFlySpell += LevitateThings;
+            onDropSpell += DropThings;
+            onThrowSpell += ThrowThings;
+            onCaptureSpell += CaptureThings;
+            onSmashSpell += SmashThings;
+            onAttackSpell += AttackThings;
         }
 
         // Update is called once per frame
@@ -177,6 +196,21 @@ namespace SpellBind
                 isControllingInteractable = false;
                 currentlySelectedInteractable = null;
             }
+        }
+
+        public void CaptureThings()
+        {
+
+        }
+
+        public void SmashThings()
+        {
+
+        }
+
+        public void AttackThings()
+        {
+
         }
     }
 }

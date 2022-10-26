@@ -58,6 +58,7 @@ namespace SpellBind
 
             if (dropIt)
             {
+                //TODO: Animate it back to origin
                 rigidBody.velocity = Vector3.zero;
                 rigidBody.useGravity = true;
                 dropIt = false;
@@ -133,7 +134,20 @@ namespace SpellBind
         /// </summary>
         public void Throw()
         {
-            isThrownTowards = GameManager.Instance.GetClosestEnemy();
+            //TODO: Check if single shot or multi shot
+            //If multi-shot, instantiate multiple bombs and throw at multiple enemies
+
+            switch(spellBombType)
+            {
+                case SpellBombType.SingleShot:
+                    isThrownTowards = GameManager.Instance.GetClosestEnemy();
+                    break;
+                case SpellBombType.MultiShot:
+                    break;
+                default:
+                    break;
+            }
+            
 
             //Change state to thrown
             spellBombState = SpellBombState.Thrown;
@@ -142,9 +156,10 @@ namespace SpellBind
         /// <summary>
         /// This function will explode the bomb near the enemy
         /// </summary>
-        public void Explode()
+        public void Explode(Enemies _collidedEnemy)
         {
-
+            _collidedEnemy.OnSpellBombed();
+            Destroy(gameObject, 0.1f);
         }
 
         private void OnCollisionEnter(Collision collision)
@@ -155,8 +170,7 @@ namespace SpellBind
             if (_collidedEnemy != null && (_collidedEnemy.enemyState != EnemyState.Spellbombed
                 || _collidedEnemy.enemyState != EnemyState.Dead))
             {
-                _collidedEnemy.OnSpellBombed();
-                Destroy(gameObject, 0.1f);
+                Explode(_collidedEnemy);
             }
 
         }

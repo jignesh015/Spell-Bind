@@ -41,15 +41,27 @@ namespace SpellBind
                 {
                     case Spells.Fly:
                         //Make objects fly!
-                        wandActionController.LevitateThings();
+                        wandActionController.onFlySpell.Invoke();
                         break;
                     case Spells.Drop:
                         //Drop objects
-                        wandActionController.DropThings();
+                        wandActionController.onDropSpell.Invoke();
                         break;
                     case Spells.Throw:
                         //Throw objects
-                        wandActionController.ThrowThings();
+                        wandActionController.onThrowSpell.Invoke();
+                        break;
+                    case Spells.Capture:
+                        //Capture objects
+                        wandActionController.onCaptureSpell.Invoke();
+                        break;
+                    case Spells.Smash:
+                        //Smash objects
+                        wandActionController.onSmashSpell.Invoke();
+                        break;
+                    case Spells.Attack:
+                        //Attack objects
+                        wandActionController.onAttackSpell.Invoke();
                         break;
                     default:
                         break;
@@ -76,6 +88,10 @@ namespace SpellBind
                 return Spells.Drop;
             else if (SpellDictionary.throwSpellDictionary.Contains(_command))
                 return Spells.Throw;
+            else if (SpellDictionary.captureSpellDictionary.Contains(_command))
+                return Spells.Capture;
+            else if (SpellDictionary.smashSpellDictionary.Contains(_command))
+                return Spells.Smash;
             else if (SpellDictionary.attackSpellDictionary.Contains(_command))
                 return Spells.Attack;
 
