@@ -11,6 +11,13 @@ namespace SpellBind
         public List<Enemies> spawnedEnemies;
         public List<SpellBombs> spawnedSpellBombs;
 
+        [Header("Spell Bomb Object Poolers")]
+        [SerializeField] private ObjectPooler spellBombSingleShotObjPool;
+        [SerializeField] private ObjectPooler spellBombMultiShotObjPool;
+
+        [Header("Spell Bomb Spawn Locations")]
+        [SerializeField] private List<Transform> spellBombSpawnLocation;
+
         private static GameManager _instance;
         public static GameManager Instance { get { return _instance; } }
 
@@ -29,13 +36,25 @@ namespace SpellBind
         // Start is called before the first frame update
         void Start()
         {
-        
+            InitiateLevel(1);
         }
 
         // Update is called once per frame
         void Update()
         {
         
+        }
+
+        /// <summary>
+        /// This function will initialize the given level
+        /// </summary>
+        /// <param name="_levelNo"></param>
+        public void InitiateLevel(int _levelNo)
+        {
+            //TODO: Create level serialized class
+
+            SpawnBomb(SpellBombType.MultiShot,
+                spellBombSpawnLocation[Random.Range(0, spellBombSpawnLocation.Count)].position);
         }
 
         /// <summary>
@@ -51,9 +70,25 @@ namespace SpellBind
         /// This function will spawn a spell bomb at the given location
         /// </summary>
         /// <param name="_spawnPos"></param>
-        public void SpawnBomb(Vector3 _spawnPos)
+        public SpellBombs SpawnBomb(SpellBombType _spellBombType, Vector3 _spawnPos)
         {
+            //TODO: Read from level file to generate appropriate bomb
 
+            //Get the bomb from the pool
+            ObjectPooler _spellBombPooler = spellBombSingleShotObjPool;
+            switch(_spellBombType)
+            {
+                case SpellBombType.SingleShot:
+                    _spellBombPooler = spellBombSingleShotObjPool;
+                    break;
+                case SpellBombType.MultiShot:
+                    _spellBombPooler = spellBombMultiShotObjPool;
+                    break;
+            }
+            GameObject _bombObj = _spellBombPooler.GetPooledObject();
+            _bombObj.transform.position = _spawnPos;
+            _bombObj.SetActive(true);
+            return _bombObj.GetComponent<SpellBombs>();
         }
 
         /// <summary>
@@ -73,6 +108,21 @@ namespace SpellBind
         {
             //TO DO: Get closest enemy
             return spawnedEnemies[0].transform;
+        }
+
+        public List<Transform> GetAllEnemies()
+        {
+            //TODO: Return all the spawned and alive enemies
+
+            List<Transform> _enemies = new List<Transform>();
+            foreach(Enemies _enemy in spawnedEnemies)
+            {
+                if(_enemy.enemyState != EnemyState.Dead)
+                {
+                    _enemies.Add(_enemy.transform);
+                }
+            }
+            return _enemies;
         }
     }
 }

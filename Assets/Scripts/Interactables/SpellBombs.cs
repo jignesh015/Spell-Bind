@@ -17,19 +17,24 @@ namespace SpellBind
         [SerializeField] private float throwSpeed;
 
         private bool makeItFly, dropIt;
-        private Transform isThrownTowards;
-
-        private void Awake()
-        {
-            spellBombState = SpellBombState.Idle;
-            interactableType = InteractableType.SpellBomb;
-            Initialize();
-        }
+        [HideInInspector]public Transform isThrownTowards;
 
         // Start is called before the first frame update
         void Start()
         {
         
+        }
+
+        private void OnEnable()
+        {
+            Initialize();
+        }
+
+        public override void Initialize()
+        {
+            base.Initialize();
+            spellBombState = SpellBombState.Idle;
+            interactableType = InteractableType.SpellBomb;
         }
 
         // Update is called once per frame
@@ -143,6 +148,21 @@ namespace SpellBind
                     isThrownTowards = GameManager.Instance.GetClosestEnemy();
                     break;
                 case SpellBombType.MultiShot:
+                    //Get multiple enemies
+                    List<Transform> _allEnemies = GameManager.Instance.GetAllEnemies();
+                    isThrownTowards = _allEnemies[0];
+                    int _bombCount = 1;
+                    for(int i = 1; i < _allEnemies.Count; i++)
+                    {
+                        if(_bombCount < shotCount)
+                        {
+                            //Spawn a bomb, assign an enemy and change its state to thrown
+                            SpellBombs _spellBomb = GameManager.Instance.SpawnBomb(spellBombType, transform.position);
+                            _spellBomb.isThrownTowards = _allEnemies[i];
+                            _spellBomb.spellBombState = SpellBombState.Thrown;
+                            _bombCount++;
+                        }
+                    }
                     break;
                 default:
                     break;
@@ -159,7 +179,9 @@ namespace SpellBind
         public void Explode(Enemies _collidedEnemy)
         {
             _collidedEnemy.OnSpellBombed();
-            Destroy(gameObject, 0.1f);
+
+            //Disable current bomb
+            gameObject.SetActive(false);
         }
 
         private void OnCollisionEnter(Collision collision)

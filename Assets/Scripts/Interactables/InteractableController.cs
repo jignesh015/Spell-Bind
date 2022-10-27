@@ -24,7 +24,7 @@ namespace SpellBind
             
         }
 
-        public void Initialize()
+        public virtual void Initialize()
         {
             rigidBody = GetComponent<Rigidbody>();
             outline = GetComponentInChildren<Outline>();

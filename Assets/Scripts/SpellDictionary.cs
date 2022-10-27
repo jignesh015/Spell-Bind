@@ -26,7 +26,7 @@ namespace SpellBind
             "throw", "grow", "through", "thorough", "tough", "rough", "tree",
             "four", "sorrow", "two", "to", "too", "do", "sow", "bow", "device",
             "sew", "saw", "thaw", "they", "the", "dough", "true", "bro", "borrow",
-            "borough", "threw"
+            "borough", "threw", "girl"
         };
         public static List<string> captureSpellDictionary = new List<string>()
         {
