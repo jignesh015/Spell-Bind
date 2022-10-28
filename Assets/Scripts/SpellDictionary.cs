@@ -13,7 +13,7 @@ namespace SpellBind
             "might", "height", "light", "night", "flag", "friend", "diet", "hi", "bye",
             "spy", "tie", "fry", "pry", "plan", "plane", "snap", "buy", "pie", "try", "defy",
             "like", "bike", "mike", "spike", "reply", "goodbye", "polite", "police", "follow",
-            "follower", "hey"
+            "follower", "hey", "blank"
         };
         public static List<string> dropSpellDictionary = new List<string>()
         {
@@ -26,7 +26,7 @@ namespace SpellBind
             "throw", "grow", "through", "thorough", "tough", "rough", "tree",
             "four", "sorrow", "two", "to", "too", "do", "sow", "bow", "device",
             "sew", "saw", "thaw", "they", "the", "dough", "true", "bro", "borrow",
-            "borough", "threw", "girl"
+            "borough", "threw", "girl", "book"
         };
         public static List<string> captureSpellDictionary = new List<string>()
         {

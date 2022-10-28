@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using TMPro;
+using System.Text.RegularExpressions;
 
 namespace SpellBind
 {
@@ -89,8 +90,8 @@ namespace SpellBind
         private Spells ValidateSpell(string _command)
         {
             //Remove special characters from the recognized command
-            _command = _command.ToLower().Replace(".", "").Replace(" ", "").Replace("-","");
-            
+            _command = Regex.Replace(_command, "[^a-zA-Z]+", "").ToLower();
+
             Debug.LogFormat("Command Lower : {0}", _command);
             spellDebugText.text = _command;
             
