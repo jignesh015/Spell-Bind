@@ -13,7 +13,7 @@ namespace SpellBind
             "might", "height", "light", "night", "flag", "friend", "diet", "hi", "bye",
             "spy", "tie", "fry", "pry", "plan", "plane", "snap", "buy", "pie", "try", "defy",
             "like", "bike", "mike", "spike", "reply", "goodbye", "polite", "police", "follow",
-            "follower", "hey", "blank"
+            "follower", "hey", "blank", "snipe", "say"
         };
         public static List<string> dropSpellDictionary = new List<string>()
         {
@@ -46,7 +46,7 @@ namespace SpellBind
             "rehab", "attached", "ok", "hockey", "jockey", "attic", "adeck",
             "acake", "hazard", "text", "adad", "contact", "adeck", "hundred",
             "hidad", "heydad", "heyday", "mayday", "myriad", "arrange", "back",
-            "aback", "ihad", "accept", "except", "accident", "i'd", "iknow"
+            "aback", "ihad", "accept", "except", "accident", "id", "iknow"
         };
     }
 }

@@ -18,6 +18,8 @@ namespace SpellBind
         [Header("Spell Bomb Spawn Locations")]
         [SerializeField] private List<Transform> spellBombSpawnLocation;
 
+        [SerializeField] private Level level1;
+
         private static GameManager _instance;
         public static GameManager Instance { get { return _instance; } }
 
@@ -53,7 +55,7 @@ namespace SpellBind
         {
             //TODO: Create level serialized class
 
-            SpawnBomb(SpellBombType.MultiShot,
+            SpawnBomb(SpellBombType.SingleShot,
                 spellBombSpawnLocation[Random.Range(0, spellBombSpawnLocation.Count)].position);
         }
 
