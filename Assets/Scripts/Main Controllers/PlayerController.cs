@@ -10,6 +10,18 @@ namespace SpellBind
         public bool isGrabbingWand;
 
         public CapsuleCollider playerCollider;
+        [SerializeField] private float playerColliderOffset;
+        
+
+        private void Awake()
+        {
+            float _yOffset = playerColliderOffset;
+            Vector3 _colliderPos = playerCollider.transform.position;
+#if UNITY_EDITOR
+            _yOffset = playerColliderOffset * -1;
+#endif
+            playerCollider.transform.position = new Vector3(_colliderPos.x, _yOffset, _colliderPos.z);
+        }
 
         // Start is called before the first frame update
         void Start()

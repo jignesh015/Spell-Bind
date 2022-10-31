@@ -13,7 +13,7 @@ namespace SpellBind
             "might", "height", "light", "night", "flag", "friend", "diet", "hi", "bye",
             "spy", "tie", "fry", "pry", "plan", "plane", "snap", "buy", "pie", "try", "defy",
             "like", "bike", "mike", "spike", "reply", "goodbye", "polite", "police", "follow",
-            "follower", "hey", "blank", "snipe", "say"
+            "follower", "hey", "blank", "snipe", "say", "free", "faye", "spray"
         };
         public static List<string> dropSpellDictionary = new List<string>()
         {
