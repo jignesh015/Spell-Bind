@@ -11,6 +11,9 @@ namespace SpellBind
         public List<Enemies> spawnedEnemies;
         public List<SpellBombs> spawnedSpellBombs;
 
+        [HideInInspector]
+        public PlayerController playerController;
+
         [Header("Spell Bomb Object Poolers")]
         [SerializeField] private ObjectPooler spellBombSingleShotObjPool;
         [SerializeField] private ObjectPooler spellBombMultiShotObjPool;
@@ -33,6 +36,8 @@ namespace SpellBind
             {
                 _instance = this;
             }
+
+            playerController = FindObjectOfType<PlayerController>();
         }
 
         // Start is called before the first frame update
@@ -55,7 +60,7 @@ namespace SpellBind
         {
             //TODO: Create level serialized class
 
-            SpawnBomb(SpellBombType.SingleShot,
+            SpawnBomb(SpellBombType.MultiShot,
                 spellBombSpawnLocation[Random.Range(0, spellBombSpawnLocation.Count)].position);
         }
 

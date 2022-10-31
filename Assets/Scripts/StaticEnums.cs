@@ -21,6 +21,7 @@ namespace SpellBind
         Attacking,
         Dodging,
         Captured,
+        Smashed,
         Spellbombed,
         Dead
     }
