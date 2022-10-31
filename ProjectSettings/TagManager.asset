@@ -14,9 +14,9 @@ TagManager:
   - UI
   - SpellBomb
   - Enemy
-  - Fireball
-  - 
-  - 
+  - EnemyFireball
+  - Player
+  - PlayerFireball
   - 
   - 
   - 

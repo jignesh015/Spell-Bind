@@ -27,8 +27,10 @@ namespace SpellBind
 
         private bool isControllingInteractable;
 
-        private InteractableController currentlySelectedInteractable;
+        [SerializeField]private InteractableController currentlySelectedInteractable;
         private float distanceToInteractable;
+
+        private GameManager gameManager;
         #endregion
 
         #region DELEGATES
@@ -39,6 +41,11 @@ namespace SpellBind
         public UnityAction onSmashSpell;
         public UnityAction onAttackSpell;
         #endregion
+
+        private void Awake()
+        {
+            gameManager = FindObjectOfType<GameManager>();
+        }
 
         // Start is called before the first frame update
         void Start()
@@ -139,25 +146,41 @@ namespace SpellBind
         private void DrawWandRaycastRenderer(Vector3 _startPos, Vector3 _endPos)
         {
             float _hitPointDist = Mathf.Abs(Vector3.Distance(_startPos, _endPos));
-            Vector3 _curvePoint = Vector3.up * ((_hitPointDist > 0.5f ? _hitPointDist : 0) / wandRaycastRendererCurveOffset);
+            Vector3 _curvePoint = Vector3.up * ((_hitPointDist > 0.5f ? 
+                (_hitPointDist > 5f ? _hitPointDist/2f : _hitPointDist) : 0) / wandRaycastRendererCurveOffset);
             wandRaycastRenderer.enabled = true;
             wandRaycastRendererPoints[0].position = _startPos;
             wandRaycastRendererPoints[1].position = (_startPos + _endPos) / 2f + _curvePoint;
             wandRaycastRendererPoints[2].position = _endPos;
         }
 
+        /// <summary>
+        /// Is called when player grabs the wand
+        /// </summary>
         public void OnWandGrab()
         {
             //Activate Wit
             //witActivation.ActivateWit();
         }
 
+        /// <summary>
+        /// Is called when player drops the wand
+        /// </summary>
         public void OnWandDrop()
         {
             //Deactivate Wit
             witActivation.DeactivateWit();
 
             DropThings();
+        }
+
+        /// <summary>
+        /// Returns raycast point position of the wand 
+        /// </summary>
+        /// <returns></returns>
+        public Vector3 WandRaycastPosition()
+        {
+            return wandRaycastPoint.position;
         }
 
         /// <summary>
@@ -210,7 +233,14 @@ namespace SpellBind
 
         public void AttackThings()
         {
-
+            if (currentlySelectedInteractable == null) return;
+            if(currentlySelectedInteractable.interactableType == InteractableType.Enemy)
+            {
+                //Attack this enemy
+                gameManager.playerController.Attack(currentlySelectedInteractable.GetComponent<Enemies>());
+                isControllingInteractable = false;
+                currentlySelectedInteractable = null;
+            }
         }
     }
 }

@@ -7,11 +7,14 @@ namespace SpellBind
 {
     public class SpellBombs : InteractableController
     {
+        [Header("PUBLIC SETTINGS")]
         public SpellBombType spellBombType;
         public SpellBombState spellBombState;
-        public int power;
+        public int minDamage;
+        public int maxDamage;
         public int shotCount;
 
+        [Header("THRESHOLDS")]
         [SerializeField] private float flyOffset = 0.5f;
         [SerializeField] private float flyTime = 0.5f;
         [SerializeField] private float throwSpeed;
@@ -178,7 +181,7 @@ namespace SpellBind
         /// </summary>
         public void Explode(Enemies _collidedEnemy)
         {
-            _collidedEnemy.OnSpellBombed();
+            _collidedEnemy.OnSpellBombed(Random.Range(minDamage, maxDamage));
 
             //Disable current bomb
             gameObject.SetActive(false);

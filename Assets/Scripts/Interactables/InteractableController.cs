@@ -27,7 +27,7 @@ namespace SpellBind
         public virtual void Initialize()
         {
             rigidBody = GetComponent<Rigidbody>();
-            outline = GetComponentInChildren<Outline>();
+            outline = GetComponentInChildren<Outline>(true);
             outline.enabled = false;
         }
 

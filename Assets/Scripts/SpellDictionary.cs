@@ -46,7 +46,8 @@ namespace SpellBind
             "rehab", "attached", "ok", "hockey", "jockey", "attic", "adeck",
             "acake", "hazard", "text", "adad", "contact", "adeck", "hundred",
             "hidad", "heydad", "heyday", "mayday", "myriad", "arrange", "back",
-            "aback", "ihad", "accept", "except", "accident", "id", "iknow"
+            "aback", "ihad", "accept", "except", "accident", "id", "iknow",
+            "heyjack", "hate", "ihate", "artic", "artec", "aztec"
         };
     }
 }

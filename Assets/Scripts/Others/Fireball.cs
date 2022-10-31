@@ -10,7 +10,7 @@ namespace SpellBind
         private int damage;
         private float speed;
 
-        private Vector3 playerPos;
+        private Vector3 victimPos;
         private bool shouldAttack;
 
         // Start is called before the first frame update
@@ -24,17 +24,15 @@ namespace SpellBind
         {
             if(shouldAttack)
             {
-                transform.position = Vector3.MoveTowards(transform.position, playerPos,
+                transform.position = Vector3.MoveTowards(transform.position, victimPos,
                     Time.deltaTime * speed);
             }
         }
 
-        public void AttackPlayer(Vector3 _startPos, Vector3 _playerPos, int _damage, float _speed)
+        public void Attack(Vector3 _startPos, Vector3 _victimPos, int _damage, float _speed)
         {
-            //Debug.LogFormat("<COLOR=RED>ATTACK PLAYER {0}</COLOR>", _playerPos);
-
             transform.position = _startPos;
-            playerPos = _playerPos;
+            victimPos = _victimPos;
             damage = _damage;
             speed = _speed;
             shouldAttack = true;
@@ -42,11 +40,23 @@ namespace SpellBind
 
         private void OnCollisionEnter(Collision collision)
         {
-            if(collision != null && collision.gameObject.CompareTag("Player"))
+            if (collision == null) return;
+
+            if (collision.gameObject.CompareTag("Player"))
             {
                 //Attack Player
                 GameManager.Instance.playerController.OnPlayerAttacked(damage);
                 Invoke(nameof(DisableFireball), 0.1f);
+            }
+            else if(collision.gameObject.GetComponentInParent<Enemies>())
+            {
+                Enemies _enemy = collision.gameObject.GetComponentInParent<Enemies>();
+                if(_enemy.enemyType == EnemyType.Attacker)
+                {
+                    //Damage enemy
+                    _enemy.OnEnemyAttacked(damage);
+                    Invoke(nameof(DisableFireball), 0.1f);
+                }
             }
         }
 

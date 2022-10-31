@@ -6,15 +6,33 @@ namespace SpellBind
 {
     public class PlayerController : MonoBehaviour
     {
+        [Header("PUBLIC SETTINGS")]
         public int playerHealth;
         public bool isGrabbingWand;
 
+        [Header("ATTACK SETTINGS")]
+        public int minAttackDamage;
+        public int maxAttackDamage;
+        public float attackSpeed;
+
+        [Header("PLAYER COLLIDER")]
         public CapsuleCollider playerCollider;
         [SerializeField] private float playerColliderOffset;
-        
+
+        [Header("PARTICLE EFFECTS")]
+        [SerializeField] private ObjectPooler fireballPooler;
+
+        #region PRIVATE VARIABLES
+        private Enemies enemyToAttack;
+        private bool hasAttacked;
+
+        private GameManager gameManager;
+        #endregion
 
         private void Awake()
         {
+            gameManager = GameManager.Instance;
+
             float _yOffset = playerColliderOffset;
             Vector3 _colliderPos = playerCollider.transform.position;
 #if UNITY_EDITOR
@@ -37,9 +55,15 @@ namespace SpellBind
         /// <summary>
         /// This function will attack the currently hightlighted enemy
         /// </summary>
-        public void Attack()
+        public void Attack(Enemies _enemyToAttack)
         {
+            enemyToAttack = _enemyToAttack;
 
+            //Get fireball from object pool
+            Fireball _fireBall = fireballPooler.GetPooledObject().GetComponent<Fireball>();
+            _fireBall.gameObject.SetActive(true);
+            _fireBall.Attack(gameManager.wandActionController.WandRaycastPosition(), enemyToAttack.transform.position,
+               Random.Range(minAttackDamage,maxAttackDamage), attackSpeed);
         }
 
         /// <summary>

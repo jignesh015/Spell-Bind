@@ -11,6 +11,7 @@ namespace SpellBind
         public EnemyState enemyState;
 
         [Header("ENEMY THRESHOLDS")]
+        [SerializeField] private int health = 50;
         [SerializeField] private float minAttackPeriod = 3;
         [SerializeField] private float maxAttackPeriod = 6;
 
@@ -28,6 +29,7 @@ namespace SpellBind
 
         private GameManager gameManager;
         private AudioSource enemyAudioSource;
+        private CapsuleCollider capsuleCollider;
 
         //Attack Variables
         private float timeSinceLastAttack;
@@ -41,6 +43,20 @@ namespace SpellBind
             
             fireball.gameObject.SetActive(false);
             nextAttackDelay = Random.Range(minAttackPeriod, maxAttackPeriod);
+        }
+
+        private void OnEnable()
+        {
+            Initialize();
+        }
+
+        public override void Initialize()
+        {
+            base.Initialize();
+
+            //Enable all colliders
+            capsuleCollider = GetComponentInChildren<CapsuleCollider>();
+            capsuleCollider.enabled = true;
         }
 
         // Update is called once per frame
@@ -74,6 +90,18 @@ namespace SpellBind
             }
         }
 
+        public override void Highlight()
+        {
+            //Enable Outline
+            outline.enabled = true;
+        }
+
+        public override void StopHighlight()
+        {
+            //Reset Outline
+            outline.enabled = false;
+        }
+
         /// <summary>
         /// This function attacks the player
         /// </summary>
@@ -84,7 +112,7 @@ namespace SpellBind
 
             //Attack the player
             fireball.gameObject.SetActive(true);
-            fireball.AttackPlayer(transform.position, gameManager.playerController.GetPlayerPos(),
+            fireball.Attack(transform.position, gameManager.playerController.GetPlayerPos(),
                 damage, fireballSpeed);
         }
 
@@ -97,16 +125,51 @@ namespace SpellBind
         }
 
         /// <summary>
+        /// This function is called when the enemy is successfully attacked
+        /// </summary>
+        public void OnEnemyAttacked(int _damage)
+        {
+            StopHighlight();
+
+            //TODO: Play attacked VFX
+
+            health -= _damage;
+            if (health <= 0)
+                ExplodeSelf();
+        }
+
+        /// <summary>
         /// This function is called when a spell bomb collides with the enemy
         /// </summary>
-        public void OnSpellBombed()
+        public void OnSpellBombed(int _damage)
         {
             enemyState = EnemyState.Spellbombed;
+
+            //TODO: Play spell bombed VFX
+
+            health -= _damage;
+            if(health <= 0)
+                ExplodeSelf();
+
+        }
+
+        /// <summary>
+        /// This function is called when enemy needs to be killed
+        /// </summary>
+        private void ExplodeSelf()
+        {
+            enemyState = EnemyState.Dead;
+
             foreach (GameObject _fx in explosionEffects) _fx.SetActive(true);
             foreach (MeshRenderer _rend in enemyMeshes) _rend.enabled = false;
 
             //Set explosion SFX
             PlaySFX(explosionSFX);
+
+            //Disable all colliders
+            capsuleCollider.enabled = false;
+
+            Invoke(nameof(DisableSelf), 5f);
         }
 
         private void PlaySFX(AudioClip _sfx)
@@ -114,6 +177,11 @@ namespace SpellBind
             enemyAudioSource.Stop();
             enemyAudioSource.clip = explosionSFX;
             enemyAudioSource.Play();
+        }
+
+        private void DisableSelf()
+        {
+            gameObject.SetActive(false);
         }
     }
 }

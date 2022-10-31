@@ -86,11 +86,13 @@ MonoBehaviour:
   outline: {fileID: 0}
   spellBombType: 0
   spellBombState: 0
-  power: 5
+  minDamage: 25
+  maxDamage: 51
   shotCount: 1
   flyOffset: 0.1
   flyTime: 0.5
   throwSpeed: 10
+  isThrownTowards: {fileID: 0}
 --- !u!1 &8232994533192691115
 GameObject:
   m_ObjectHideFlags: 0
@@ -192,5 +194,5 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.04, y: 0.04, z: 1.4}
-  m_Center: {x: 0, y: 0, z: 0.63}
+  m_Size: {x: 0.07, y: 0.07, z: 2}
+  m_Center: {x: -0.0015419564, y: -3.7160103e-17, z: 0.94}

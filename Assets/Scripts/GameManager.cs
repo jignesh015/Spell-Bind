@@ -11,17 +11,24 @@ namespace SpellBind
         public List<Enemies> spawnedEnemies;
         public List<SpellBombs> spawnedSpellBombs;
 
-        [HideInInspector]
-        public PlayerController playerController;
-
-        [Header("Spell Bomb Object Poolers")]
+        [Header("SPELL BOMB OBJ POOLS")]
         [SerializeField] private ObjectPooler spellBombSingleShotObjPool;
         [SerializeField] private ObjectPooler spellBombMultiShotObjPool;
 
-        [Header("Spell Bomb Spawn Locations")]
+        [Header("SPELL BOMB SPAWN LOC")]
         [SerializeField] private List<Transform> spellBombSpawnLocation;
 
+        [Header("LAYER REFERENCES")]
+        [SerializeField] private LayerMask playerLayer;
+        [SerializeField] private LayerMask enemyLayer;
+        [SerializeField] private LayerMask spellBombLayer;
+
         [SerializeField] private Level level1;
+
+        #region SCRIPT REFERENCES
+        [HideInInspector] public PlayerController playerController;
+        [HideInInspector] public WandActionController wandActionController;
+        #endregion
 
         private static GameManager _instance;
         public static GameManager Instance { get { return _instance; } }
@@ -37,7 +44,9 @@ namespace SpellBind
                 _instance = this;
             }
 
+            //Get script references
             playerController = FindObjectOfType<PlayerController>();
+            wandActionController = FindObjectOfType<WandActionController>();
         }
 
         // Start is called before the first frame update
@@ -60,7 +69,7 @@ namespace SpellBind
         {
             //TODO: Create level serialized class
 
-            SpawnBomb(SpellBombType.MultiShot,
+            SpawnBomb(SpellBombType.SingleShot,
                 spellBombSpawnLocation[Random.Range(0, spellBombSpawnLocation.Count)].position);
         }
 

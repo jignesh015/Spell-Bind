@@ -9,6 +9,16 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 282755115484441457, guid: 5aafa2cffd4cb9f4f9fe867075c30fa1,
         type: 3}
+      propertyPath: maxDamage
+      value: 51
+      objectReference: {fileID: 0}
+    - target: {fileID: 282755115484441457, guid: 5aafa2cffd4cb9f4f9fe867075c30fa1,
+        type: 3}
+      propertyPath: minDamage
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 282755115484441457, guid: 5aafa2cffd4cb9f4f9fe867075c30fa1,
+        type: 3}
       propertyPath: shotCount
       value: 3
       objectReference: {fileID: 0}
@@ -75,7 +85,7 @@ PrefabInstance:
     - target: {fileID: 623569238110482889, guid: 5aafa2cffd4cb9f4f9fe867075c30fa1,
         type: 3}
       propertyPath: m_Name
-      value: SpellBomb_MultiShot
+      value: SpellBomb_MultiShot Variant
       objectReference: {fileID: 0}
     - target: {fileID: 7370095140440925218, guid: 5aafa2cffd4cb9f4f9fe867075c30fa1,
         type: 3}
