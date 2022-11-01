@@ -47,7 +47,8 @@ namespace SpellBind
             "acake", "hazard", "text", "adad", "contact", "adeck", "hundred",
             "hidad", "heydad", "heyday", "mayday", "myriad", "arrange", "back",
             "aback", "ihad", "accept", "except", "accident", "id", "iknow",
-            "heyjack", "hate", "ihate", "artic", "artec", "aztec"
+            "heyjack", "hate", "ihate", "artic", "artec", "aztec", "heydec",
+            "hectic", "heretic"
         };
     }
 }

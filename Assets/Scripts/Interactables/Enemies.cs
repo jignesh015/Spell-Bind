@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace SpellBind
@@ -26,6 +27,7 @@ namespace SpellBind
 
         [Header("SFX REFERENCES")]
         [SerializeField] private AudioClip explosionSFX;
+        [SerializeField] private AudioClip sparkSFX;
 
         private GameManager gameManager;
         private AudioSource enemyAudioSource;
@@ -131,11 +133,19 @@ namespace SpellBind
         {
             StopHighlight();
 
-            //TODO: Play attacked VFX
-
             health -= _damage;
             if (health <= 0)
+            {
                 ExplodeSelf();
+            }
+            else
+            {
+                //TODO: Play attacked VFX
+                StartCoroutine(PlaySparkVFX());
+
+                //TODO: Play attacked SFX
+                PlaySFX(sparkSFX);
+            }
         }
 
         /// <summary>
@@ -145,12 +155,39 @@ namespace SpellBind
         {
             enemyState = EnemyState.Spellbombed;
 
-            //TODO: Play spell bombed VFX
-
             health -= _damage;
-            if(health <= 0)
+            if (health <= 0)
+            {
                 ExplodeSelf();
+            }
+            else
+            {
+                //TODO: Play attacked VFX
+                StartCoroutine(PlaySparkVFX());
 
+                //TODO: Play attacked SFX
+                PlaySFX(sparkSFX);
+            }
+
+        }
+
+        private IEnumerator PlaySparkVFX()
+        {
+            GameObject _sparkEffect = gameManager.objectPooler.enemySparkPool.GetPooledObject();
+            _sparkEffect.transform.position = transform.position;
+            _sparkEffect.SetActive(true);
+            List<ParticleSystem> _allEffects = _sparkEffect.GetComponentsInChildren<ParticleSystem>().ToList();
+            foreach(ParticleSystem _effect in _allEffects)
+            {
+                while(_effect.isPlaying)
+                {
+                    if (enemyState == EnemyState.Dead)
+                        yield break;
+
+                    yield return null;
+                }
+            }
+            _sparkEffect.SetActive(false);
         }
 
         /// <summary>
@@ -175,7 +212,7 @@ namespace SpellBind
         private void PlaySFX(AudioClip _sfx)
         {
             enemyAudioSource.Stop();
-            enemyAudioSource.clip = explosionSFX;
+            enemyAudioSource.clip = _sfx;
             enemyAudioSource.Play();
         }
 

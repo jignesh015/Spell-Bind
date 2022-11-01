@@ -19,9 +19,6 @@ namespace SpellBind
         public CapsuleCollider playerCollider;
         [SerializeField] private float playerColliderOffset;
 
-        [Header("PARTICLE EFFECTS")]
-        [SerializeField] private ObjectPooler fireballPooler;
-
         #region PRIVATE VARIABLES
         private Enemies enemyToAttack;
         private bool hasAttacked;
@@ -60,10 +57,11 @@ namespace SpellBind
             enemyToAttack = _enemyToAttack;
 
             //Get fireball from object pool
-            Fireball _fireBall = fireballPooler.GetPooledObject().GetComponent<Fireball>();
+            Fireball _fireBall = gameManager.objectPooler.playerFireballPool.GetPooledObject()
+                .GetComponent<Fireball>();
             _fireBall.gameObject.SetActive(true);
-            _fireBall.Attack(gameManager.wandActionController.WandRaycastPosition(), enemyToAttack.transform.position,
-               Random.Range(minAttackDamage,maxAttackDamage), attackSpeed);
+            _fireBall.Attack(gameManager.wandActionController.WandRaycastPosition(), 
+                enemyToAttack.transform.position,Random.Range(minAttackDamage,maxAttackDamage), attackSpeed);
         }
 
         /// <summary>

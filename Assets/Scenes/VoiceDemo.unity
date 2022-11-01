@@ -210,7 +210,7 @@ PrefabInstance:
     - target: {fileID: 8714244275622671901, guid: abf8d5b763621654486813c5c8af8234,
         type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 8714244275622671901, guid: abf8d5b763621654486813c5c8af8234,
         type: 3}
@@ -573,6 +573,7 @@ MonoBehaviour:
   damage: 30
   fireballSpeed: 10
   explosionSFX: {fileID: 8300000, guid: 67db05005b8b0b74ca2d3384c5335799, type: 3}
+  sparkSFX: {fileID: 8300000, guid: 3df171ff064cdc04c952760b209d9a7e, type: 3}
 --- !u!114 &76277367
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1311,6 +1312,7 @@ Transform:
   - {fileID: 635381101}
   - {fileID: 92563724}
   - {fileID: 1652079496}
+  - {fileID: 1510638454}
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2333,6 +2335,52 @@ Transform:
   m_Father: {fileID: 1944916687}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1431379182
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1431379183}
+  - component: {fileID: 1431379184}
+  m_Layer: 0
+  m_Name: Enemy Spark Pool
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1431379183
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1431379182}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.2873983, y: -1.4301388, z: -0.30382636}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1960476567}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1431379184
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1431379182}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 63f9f6f58f31cb0478c2b94cb5fbc640, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 1293221235931303642, guid: 5a0b23765b0154a439aeb6fd0d025a05, type: 3}
+  poolCount: 5
 --- !u!1001 &1502866972
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2402,6 +2450,54 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2a54b78eced40e74db39ff12257d5702, type: 3}
+--- !u!1 &1510638453
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1510638454}
+  - component: {fileID: 1510638455}
+  m_Layer: 0
+  m_Name: ObjectPoolController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1510638454
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1510638453}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 714620886}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1510638455
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1510638453}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0e26c030f4ed294f98e5413b286102e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerFireballPool: {fileID: 1144222747}
+  enemySparkPool: {fileID: 1431379184}
+  spellBombSingleShotObjPool: {fileID: 1708444108}
+  spellBombMultiShotObjPool: {fileID: 955344662}
 --- !u!1001 &1559289843
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2412,7 +2508,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 38e4ff6661c851d4aa5d62feb71d9221,
         type: 3}
       propertyPath: m_RootOrder
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 38e4ff6661c851d4aa5d62feb71d9221,
         type: 3}
@@ -3055,8 +3151,6 @@ MonoBehaviour:
   spawnedEnemies:
   - {fileID: 76277366}
   spawnedSpellBombs: []
-  spellBombSingleShotObjPool: {fileID: 1708444108}
-  spellBombMultiShotObjPool: {fileID: 955344662}
   spellBombSpawnLocation:
   - {fileID: 300646846}
   playerLayer:
@@ -3081,6 +3175,7 @@ MonoBehaviour:
     spellBombSpawnRate: 0
   playerController: {fileID: 0}
   wandActionController: {fileID: 0}
+  objectPooler: {fileID: 0}
 --- !u!4 &1713376385
 Transform:
   m_ObjectHideFlags: 0
@@ -4169,7 +4264,6 @@ MonoBehaviour:
   attackSpeed: 7
   playerCollider: {fileID: 1357786876}
   playerColliderOffset: -0.7
-  fireballPooler: {fileID: 1144222747}
 --- !u!1 &1944916686
 GameObject:
   m_ObjectHideFlags: 0
@@ -4235,6 +4329,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1144222746}
+  - {fileID: 1431379183}
   m_Father: {fileID: 1944916687}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -5957,7 +6052,7 @@ PrefabInstance:
     - target: {fileID: 6962542658454487523, guid: 0f3783881e4ebe54cb38a78a498bec54,
         type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6962542658454487523, guid: 0f3783881e4ebe54cb38a78a498bec54,
         type: 3}

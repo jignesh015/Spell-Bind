@@ -11,10 +11,6 @@ namespace SpellBind
         public List<Enemies> spawnedEnemies;
         public List<SpellBombs> spawnedSpellBombs;
 
-        [Header("SPELL BOMB OBJ POOLS")]
-        [SerializeField] private ObjectPooler spellBombSingleShotObjPool;
-        [SerializeField] private ObjectPooler spellBombMultiShotObjPool;
-
         [Header("SPELL BOMB SPAWN LOC")]
         [SerializeField] private List<Transform> spellBombSpawnLocation;
 
@@ -28,6 +24,7 @@ namespace SpellBind
         #region SCRIPT REFERENCES
         [HideInInspector] public PlayerController playerController;
         [HideInInspector] public WandActionController wandActionController;
+        [HideInInspector] public ObjectPoolController objectPooler;
         #endregion
 
         private static GameManager _instance;
@@ -47,6 +44,7 @@ namespace SpellBind
             //Get script references
             playerController = FindObjectOfType<PlayerController>();
             wandActionController = FindObjectOfType<WandActionController>();
+            objectPooler = FindObjectOfType<ObjectPoolController>();
         }
 
         // Start is called before the first frame update
@@ -88,17 +86,15 @@ namespace SpellBind
         /// <param name="_spawnPos"></param>
         public SpellBombs SpawnBomb(SpellBombType _spellBombType, Vector3 _spawnPos)
         {
-            //TODO: Read from level file to generate appropriate bomb
-
             //Get the bomb from the pool
-            ObjectPooler _spellBombPooler = spellBombSingleShotObjPool;
+            ObjectPooler _spellBombPooler = objectPooler.spellBombSingleShotObjPool;
             switch(_spellBombType)
             {
                 case SpellBombType.SingleShot:
-                    _spellBombPooler = spellBombSingleShotObjPool;
+                    _spellBombPooler = objectPooler.spellBombSingleShotObjPool;
                     break;
                 case SpellBombType.MultiShot:
-                    _spellBombPooler = spellBombMultiShotObjPool;
+                    _spellBombPooler = objectPooler.spellBombMultiShotObjPool;
                     break;
             }
             GameObject _bombObj = _spellBombPooler.GetPooledObject();
