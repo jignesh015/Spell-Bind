@@ -210,7 +210,7 @@ PrefabInstance:
     - target: {fileID: 8714244275622671901, guid: abf8d5b763621654486813c5c8af8234,
         type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8714244275622671901, guid: abf8d5b763621654486813c5c8af8234,
         type: 3}
@@ -571,7 +571,7 @@ MonoBehaviour:
   - {fileID: 1559289848}
   fireball: {fileID: 1814491126}
   damage: 30
-  fireballSpeed: 10
+  fireballSpeed: 8
   explosionSFX: {fileID: 8300000, guid: 67db05005b8b0b74ca2d3384c5335799, type: 3}
   sparkSFX: {fileID: 8300000, guid: 3df171ff064cdc04c952760b209d9a7e, type: 3}
 --- !u!114 &76277367
@@ -2508,7 +2508,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 38e4ff6661c851d4aa5d62feb71d9221,
         type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 38e4ff6661c851d4aa5d62feb71d9221,
         type: 3}
@@ -4261,7 +4261,7 @@ MonoBehaviour:
   isGrabbingWand: 0
   minAttackDamage: 30
   maxAttackDamage: 51
-  attackSpeed: 7
+  attackSpeed: 8
   playerCollider: {fileID: 1357786876}
   playerColliderOffset: -0.7
 --- !u!1 &1944916686
@@ -6049,10 +6049,15 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 76277365}
     m_Modifications:
+    - target: {fileID: 6962542658454487521, guid: 0f3783881e4ebe54cb38a78a498bec54,
+        type: 3}
+      propertyPath: lifetime
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 6962542658454487523, guid: 0f3783881e4ebe54cb38a78a498bec54,
         type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6962542658454487523, guid: 0f3783881e4ebe54cb38a78a498bec54,
         type: 3}

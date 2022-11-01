@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,25 +8,39 @@ namespace SpellBind
 {
     public class Fireball : MonoBehaviour
     {
+        [SerializeField] private float lifetime = 3f;
+
         private int damage;
         private float speed;
 
         private Vector3 victimPos;
-        private bool shouldAttack;
+        private bool isAttacking;
+
+        private Rigidbody rigidBody;
+
+        private float timeSinceAlive;
+
+        private void Awake()
+        {
+            rigidBody = GetComponent<Rigidbody>();
+        }
 
         // Start is called before the first frame update
         void Start()
         {
-        
+            
         }
 
         // Update is called once per frame
         void Update()
         {
-            if(shouldAttack)
+            if(isAttacking)
             {
-                transform.position = Vector3.MoveTowards(transform.position, victimPos,
-                    Time.deltaTime * speed);
+                timeSinceAlive += Time.deltaTime;
+                if(timeSinceAlive > lifetime)
+                {
+                    DisableFireball();
+                }
             }
         }
 
@@ -35,7 +50,17 @@ namespace SpellBind
             victimPos = _victimPos;
             damage = _damage;
             speed = _speed;
-            shouldAttack = true;
+            isAttacking = true;
+            timeSinceAlive = 0;
+
+            try
+            {
+                rigidBody.velocity = (_victimPos - _startPos).normalized * speed;
+            }
+            catch(Exception e)
+            {
+                Debug.LogError(e);
+            }
         }
 
         private void OnCollisionEnter(Collision collision)
@@ -62,7 +87,8 @@ namespace SpellBind
 
         private void DisableFireball()
         {
-            shouldAttack = false;
+            timeSinceAlive = 0;
+            isAttacking = false;
             gameObject.SetActive(false);
         }
     }
