@@ -197,16 +197,22 @@ namespace SpellBind
         public void LevitateThings()
         {
             if (currentlySelectedInteractable == null) return;
-            currentlySelectedInteractable.Levitate();
-            isControllingInteractable = true;
+            if (currentlySelectedInteractable.interactableType == InteractableType.SpellBomb)
+            {
+                currentlySelectedInteractable.Levitate();
+                isControllingInteractable = true;
+            }
         }
 
         public void DropThings()
         {
             if (currentlySelectedInteractable == null) return;
-            currentlySelectedInteractable.Drop();
-            isControllingInteractable = false;
-            currentlySelectedInteractable = null;
+            if (currentlySelectedInteractable.interactableType == InteractableType.SpellBomb)
+            {
+                currentlySelectedInteractable.Drop();
+                isControllingInteractable = false;
+                currentlySelectedInteractable = null;
+            }
         }
 
         public void ThrowThings()
