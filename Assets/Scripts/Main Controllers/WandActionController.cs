@@ -244,6 +244,8 @@ namespace SpellBind
             {
                 //Attack this enemy
                 gameManager.playerController.Attack(currentlySelectedInteractable.GetComponent<Enemies>());
+                //Inform enemy about incoming attack
+                currentlySelectedInteractable.GetComponent<Enemies>().Dodge();
                 isControllingInteractable = false;
                 currentlySelectedInteractable = null;
             }

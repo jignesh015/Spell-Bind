@@ -8,7 +8,7 @@ namespace SpellBind
 {
     public class Fireball : MonoBehaviour
     {
-        [SerializeField] private float lifetime = 3f;
+        [SerializeField] private float lifetime = 2f;
 
         private int damage;
         private float speed;

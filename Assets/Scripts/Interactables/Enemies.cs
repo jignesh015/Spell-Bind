@@ -13,8 +13,16 @@ namespace SpellBind
 
         [Header("ENEMY THRESHOLDS")]
         [SerializeField] private int health = 50;
+
+        [Header("ATTACK THRESHOLDS")]
         [SerializeField] private float minAttackPeriod = 3;
         [SerializeField] private float maxAttackPeriod = 6;
+
+        [Header("DODGE THRESHOLDS")]
+        [SerializeField] private float dodgeProbability = 0.2f;
+        [SerializeField] private float dodgeOffsetX = 1f;
+        [SerializeField] private float dodgeTime = 1f;
+        [SerializeField] private float dodgeBackInterval = 0.2f;
 
         [Header("EXPLOSION REFERENCES")]
         [SerializeField] private List<GameObject> explosionEffects;
@@ -67,6 +75,9 @@ namespace SpellBind
             switch(enemyState)
             {
                 case EnemyState.Attacking:
+                    //Look at the player
+                    transform.LookAt(gameManager.playerController.GetPlayerPos());
+
                     //Attack player after set amount of time
                     timeSinceLastAttack += Time.deltaTime;
                     if (timeSinceLastAttack > nextAttackDelay)
@@ -123,7 +134,44 @@ namespace SpellBind
         /// </summary>
         public void Dodge()
         {
+            if(Random.value <= dodgeProbability)
+                StartCoroutine(IsDodging());
+        }
 
+        private IEnumerator IsDodging()
+        {
+            enemyState = EnemyState.Dodging;
+            capsuleCollider.enabled = false;
+
+            yield return new WaitForSeconds(0.2f);
+
+            Vector3 _dodgeDirection = Random.value <= 0.5f ? Vector3.right : Vector3.left;
+            Vector3 _startPos = transform.position;
+            Vector3 _endPos = _startPos + (_dodgeDirection * dodgeOffsetX);
+            float _elapsedTime = 0;
+            while (_elapsedTime < dodgeTime)
+            {
+                transform.position = Vector3.Lerp(transform.position, _endPos, (_elapsedTime / dodgeTime));
+                _elapsedTime += Time.deltaTime;
+                yield return null;
+            }
+
+            yield return new WaitForSeconds(dodgeBackInterval);
+
+            //Go back to original pos
+            _elapsedTime = 0;
+            while (_elapsedTime < dodgeTime)
+            {
+                transform.position = Vector3.Lerp(transform.position, _startPos, (_elapsedTime / dodgeTime));
+                _elapsedTime += Time.deltaTime;
+                yield return null;
+            }
+
+            // Make sure we got there
+            transform.position = _startPos;
+            capsuleCollider.enabled = true;
+            enemyState = EnemyState.Attacking;
+            yield return null;
         }
 
         /// <summary>

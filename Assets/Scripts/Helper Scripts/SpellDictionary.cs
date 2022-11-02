@@ -48,7 +48,8 @@ namespace SpellBind
             "hidad", "heydad", "heyday", "mayday", "myriad", "arrange", "back",
             "aback", "ihad", "accept", "except", "accident", "id", "iknow",
             "heyjack", "hate", "ihate", "artic", "artec", "aztec", "heydec",
-            "hectic", "heretic"
+            "hectic", "heretic", "itake", "illtake", "anddad", "idad",
+            "untack", "untick", "until", "uncle", "ankle"
         };
     }
 }
