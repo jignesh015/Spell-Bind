@@ -229,7 +229,12 @@ namespace SpellBind
 
         public void CaptureThings()
         {
-
+            if (currentlySelectedInteractable == null) return;
+            if (currentlySelectedInteractable.interactableType == InteractableType.Enemy)
+            {
+                //Capture this enemy
+                currentlySelectedInteractable.GetComponent<Enemies>().OnCaptured();
+            }
         }
 
         public void SmashThings()

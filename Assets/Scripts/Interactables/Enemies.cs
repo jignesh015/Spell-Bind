@@ -25,6 +25,10 @@ namespace SpellBind
         [SerializeField] private float dodgeTime = 1f;
         [SerializeField] private float dodgeBackInterval = 0.2f;
 
+        [Header("CAPTURE THRESHOLDS")]
+        [SerializeField] private float minCaptureDuration = 4f;
+        [SerializeField] private float maxCaptureDuration = 7f;
+
         [Header("EXPLOSION REFERENCES")]
         [SerializeField] private List<GameObject> explosionEffects;
         [SerializeField] private List<MeshRenderer> enemyMeshes;
@@ -33,6 +37,9 @@ namespace SpellBind
         [SerializeField] private Fireball fireball;
         [SerializeField] private int damage = 30;
         [SerializeField] private float fireballSpeed = 10;
+
+        [Header("CAPTURE SPHERE REFERENCES")]
+        [SerializeField] private GameObject captureSphere;
 
         [Header("SFX REFERENCES")]
         [SerializeField] private AudioClip explosionSFX;
@@ -45,6 +52,10 @@ namespace SpellBind
         //Attack Variables
         private float timeSinceLastAttack;
         private float nextAttackDelay;
+
+        //Captured Variables
+        private float timeSinceCaptured;
+        private float captureDuration;
 
         private Animator enemyAnimator;
         private List<string> animTriggers;
@@ -98,6 +109,9 @@ namespace SpellBind
                     break;
                 case EnemyState.Captured:
                     //Try to escape the captured state
+                    timeSinceCaptured += Time.deltaTime;
+                    if (timeSinceCaptured > captureDuration)
+                        OnEscapeCapturedState();
                     break;
                 case EnemyState.Smashed:
                     //Smash against the wall colliders
@@ -209,6 +223,38 @@ namespace SpellBind
                 //Play attacked animation
                 PlayAnimation(animTriggers[3]);
             }
+        }
+
+        /// <summary>
+        /// This function is called when the enemy is captured by the player
+        /// </summary>
+        public void OnCaptured()
+        {
+            if(enemyType == EnemyType.Attacker || enemyType == EnemyType.Dodger)
+            {
+                StopHighlight();
+                enemyState = EnemyState.Captured;
+                captureSphere.SetActive(true);
+
+                captureDuration = Random.Range(minCaptureDuration, maxCaptureDuration);
+                timeSinceCaptured = 0;
+            }
+        }
+
+        /// <summary>
+        /// This function is called when the enemy escapes the captured state
+        /// </summary>
+        public void OnEscapeCapturedState()
+        {
+            enemyState = EnemyState.Attacking;
+            StartCoroutine(Escaping());
+        }
+
+        private IEnumerator Escaping()
+        {
+            captureSphere.GetComponent<Animator>().SetTrigger("Escape");
+            yield return new WaitForSeconds(0.55f);
+            captureSphere.SetActive(false);
         }
 
         /// <summary>
