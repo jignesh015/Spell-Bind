@@ -49,7 +49,8 @@ namespace SpellBind
             "aback", "ihad", "accept", "except", "accident", "id", "iknow",
             "heyjack", "hate", "ihate", "artic", "artec", "aztec", "heydec",
             "hectic", "heretic", "itake", "illtake", "anddad", "idad",
-            "untack", "untick", "until", "uncle", "ankle"
+            "untack", "untick", "until", "uncle", "ankle", "attime",
+            "hidan", "untapped", "ontime", "atime"
         };
     }
 }

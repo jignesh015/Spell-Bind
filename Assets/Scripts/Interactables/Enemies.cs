@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace SpellBind
 {
@@ -44,15 +45,22 @@ namespace SpellBind
         //Attack Variables
         private float timeSinceLastAttack;
         private float nextAttackDelay;
+
+        private Animator enemyAnimator;
+        private List<string> animTriggers;
         
         // Start is called before the first frame update
         void Start()
         {
             gameManager = GameManager.Instance;
             enemyAudioSource = GetComponent<AudioSource>();
-            
+            enemyAnimator = GetComponent<Animator>();
+
+
             fireball.gameObject.SetActive(false);
             nextAttackDelay = Random.Range(minAttackPeriod, maxAttackPeriod);
+
+            animTriggers = new List<string>() { "Idle", "Attacking", "Dodging", "IsAttacked", "IsSpellbombed" };
         }
 
         private void OnEnable()
@@ -80,6 +88,8 @@ namespace SpellBind
 
                     //Attack player after set amount of time
                     timeSinceLastAttack += Time.deltaTime;
+                    if (timeSinceLastAttack > nextAttackDelay - 1)
+                        PlayAnimation(animTriggers[1]);
                     if (timeSinceLastAttack > nextAttackDelay)
                         Attack();
                     break;
@@ -120,6 +130,7 @@ namespace SpellBind
         /// </summary>
         public void Attack()
         {
+            Debug.LogFormat("Current state: {0}", enemyAnimator.GetCurrentAnimatorClipInfo(0)[0].clip.name);
             timeSinceLastAttack = 0;
             nextAttackDelay = Random.Range(minAttackPeriod, maxAttackPeriod);
 
@@ -142,6 +153,7 @@ namespace SpellBind
         {
             enemyState = EnemyState.Dodging;
             capsuleCollider.enabled = false;
+            StopHighlight();
 
             yield return new WaitForSeconds(0.2f);
 
@@ -188,11 +200,14 @@ namespace SpellBind
             }
             else
             {
-                //TODO: Play attacked VFX
+                //Play attacked VFX
                 StartCoroutine(PlaySparkVFX());
 
-                //TODO: Play attacked SFX
+                //Play attacked SFX
                 PlaySFX(sparkSFX);
+
+                //Play attacked animation
+                PlayAnimation(animTriggers[3]);
             }
         }
 
@@ -219,25 +234,6 @@ namespace SpellBind
 
         }
 
-        private IEnumerator PlaySparkVFX()
-        {
-            GameObject _sparkEffect = gameManager.objectPooler.enemySparkPool.GetPooledObject();
-            _sparkEffect.transform.position = transform.position;
-            _sparkEffect.SetActive(true);
-            List<ParticleSystem> _allEffects = _sparkEffect.GetComponentsInChildren<ParticleSystem>().ToList();
-            foreach(ParticleSystem _effect in _allEffects)
-            {
-                while(_effect.isPlaying)
-                {
-                    if (enemyState == EnemyState.Dead)
-                        yield break;
-
-                    yield return null;
-                }
-            }
-            _sparkEffect.SetActive(false);
-        }
-
         /// <summary>
         /// This function is called when enemy needs to be killed
         /// </summary>
@@ -257,6 +253,10 @@ namespace SpellBind
             Invoke(nameof(DisableSelf), 5f);
         }
 
+        /// <summary>
+        /// This function plays the given audio clip
+        /// </summary>
+        /// <param name="_sfx"></param>
         private void PlaySFX(AudioClip _sfx)
         {
             enemyAudioSource.Stop();
@@ -264,6 +264,41 @@ namespace SpellBind
             enemyAudioSource.Play();
         }
 
+        /// <summary>
+        /// This function plays the spark particle effect
+        /// </summary>
+        /// <returns></returns>
+        private IEnumerator PlaySparkVFX()
+        {
+            GameObject _sparkEffect = gameManager.objectPooler.enemySparkPool.GetPooledObject();
+            _sparkEffect.transform.position = transform.position;
+            _sparkEffect.SetActive(true);
+            List<ParticleSystem> _allEffects = _sparkEffect.GetComponentsInChildren<ParticleSystem>().ToList();
+            foreach (ParticleSystem _effect in _allEffects)
+            {
+                while (_effect.isPlaying)
+                {
+                    if (enemyState == EnemyState.Dead)
+                        yield break;
+
+                    yield return null;
+                }
+            }
+            _sparkEffect.SetActive(false);
+        }
+
+        private void PlayAnimation(string _trigger)
+        {
+            if(!enemyAnimator.GetCurrentAnimatorClipInfo(0)[0].clip.name.Equals(_trigger))
+            {
+                Debug.LogFormat("<color=green>Play Animation: {0}</color>",_trigger);
+                enemyAnimator.SetTrigger(_trigger);
+            }
+        }
+
+        /// <summary>
+        /// This function disables the gameobject after the enemy is dead
+        /// </summary>
         private void DisableSelf()
         {
             gameObject.SetActive(false);
