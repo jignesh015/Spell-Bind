@@ -18,6 +18,7 @@ namespace SpellBind
         [Header("ATTACK THRESHOLDS")]
         [SerializeField] private float minAttackPeriod = 3;
         [SerializeField] private float maxAttackPeriod = 6;
+        [SerializeField] private float attackEmissionIntensity = 1.5f;
 
         [Header("DODGE THRESHOLDS")]
         [SerializeField] private float dodgeProbability = 0.2f;
@@ -28,6 +29,9 @@ namespace SpellBind
         [Header("CAPTURE THRESHOLDS")]
         [SerializeField] private float minCaptureDuration = 4f;
         [SerializeField] private float maxCaptureDuration = 7f;
+
+        [Header("SMASH THRESHOLDS")]
+        [SerializeField] private float smashSpeed = 10;
 
         [Header("EXPLOSION REFERENCES")]
         [SerializeField] private List<GameObject> explosionEffects;
@@ -52,16 +56,22 @@ namespace SpellBind
         //Attack Variables
         private float timeSinceLastAttack;
         private float nextAttackDelay;
+        private bool isPreparedForAttack;
 
         //Captured Variables
         private float timeSinceCaptured;
         private float captureDuration;
 
-        //Animator variables
+        //Animator Variables
         private Animator enemyAnimator;
         private List<string> animTriggers;
-        private string currentAnimTrigger = "";
-        
+
+        //Emission color Variables
+        [SerializeField] private Color mainColor;
+        private float currentEmissionIntensity = 1;
+
+        private GameObject explosionObj;
+
         // Start is called before the first frame update
         void Start()
         {
@@ -69,12 +79,13 @@ namespace SpellBind
             enemyAudioSource = GetComponent<AudioSource>();
             enemyAnimator = GetComponent<Animator>();
 
-
             fireball.gameObject.SetActive(false);
             nextAttackDelay = Random.Range(minAttackPeriod, maxAttackPeriod);
 
             animTriggers = new List<string>() { "Idle", "Attacking", "Dodging", "IsAttacked", 
                 "IsSpellbombed", "IsCaptured" };
+
+            mainColor = enemyMeshes[0].material.GetColor("_EmissionColor");
         }
 
         private void OnEnable()
@@ -103,7 +114,7 @@ namespace SpellBind
                     //Attack player after set amount of time
                     timeSinceLastAttack += Time.deltaTime;
                     if (timeSinceLastAttack > nextAttackDelay - 1)
-                        PlayAnimation(animTriggers[1]);
+                        PrepareForAttack();
                     if (timeSinceLastAttack > nextAttackDelay)
                         Attack();
                     break;
@@ -143,17 +154,36 @@ namespace SpellBind
         }
 
         /// <summary>
+        /// This function is called when enemy is about to attack
+        /// </summary>
+        private void PrepareForAttack()
+        {
+            currentEmissionIntensity = Mathf.Lerp(currentEmissionIntensity, attackEmissionIntensity, Time.deltaTime);
+            enemyMeshes[0].material.SetColor("_EmissionColor", mainColor * currentEmissionIntensity);
+
+            if (!isPreparedForAttack)
+            {
+                isPreparedForAttack = true;
+                PlayAnimation(animTriggers[1]);
+            }
+        }
+
+        /// <summary>
         /// This function attacks the player
         /// </summary>
         public void Attack()
         {
             timeSinceLastAttack = 0;
+            isPreparedForAttack = false;
             nextAttackDelay = Random.Range(minAttackPeriod, maxAttackPeriod);
 
             //Attack the player
             fireball.gameObject.SetActive(true);
             fireball.Attack(transform.position, gameManager.playerController.GetPlayerPos(),
                 damage, fireballSpeed);
+
+            currentEmissionIntensity = 1;
+            enemyMeshes[0].material.SetColor("_EmissionColor", mainColor);
         }
 
         /// <summary>
@@ -205,14 +235,14 @@ namespace SpellBind
         /// <summary>
         /// This function is called when the enemy is successfully attacked
         /// </summary>
-        public void OnEnemyAttacked(int _damage)
+        public void IsAttacked(int _damage)
         {
             StopHighlight();
 
             health -= _damage;
             if (health <= 0)
             {
-                ExplodeSelf();
+                ExplodeSelf(transform.position);
             }
             else
             {
@@ -230,7 +260,7 @@ namespace SpellBind
         /// <summary>
         /// This function is called when the enemy is captured by the player
         /// </summary>
-        public void OnCaptured()
+        public void IsCaptured()
         {
             if(enemyType == EnemyType.Attacker || enemyType == EnemyType.Dodger)
             {
@@ -245,6 +275,24 @@ namespace SpellBind
 
                 //Play captured animation
                 PlayAnimation(animTriggers[5]);
+            }
+        }
+
+        /// <summary>
+        /// This function is called when the enemy is smashed by the player
+        /// </summary>
+        public void IsSmashed()
+        {
+            if ((enemyType == EnemyType.Attacker || enemyType == EnemyType.Dodger)
+                && enemyState == EnemyState.Captured)
+            {
+                StopHighlight();
+                enemyState = EnemyState.Smashed;
+                PlayAnimation(animTriggers[0]);
+
+                //Smash enemy towards the ground
+                rigidBody.isKinematic = false;
+                rigidBody.velocity = Vector3.down * smashSpeed;
             }
         }
 
@@ -275,7 +323,7 @@ namespace SpellBind
             health -= _damage;
             if (health <= 0)
             {
-                ExplodeSelf();
+                ExplodeSelf(transform.position);
             }
             else
             {
@@ -291,12 +339,19 @@ namespace SpellBind
         /// <summary>
         /// This function is called when enemy needs to be killed
         /// </summary>
-        private void ExplodeSelf()
+        public void ExplodeSelf(Vector3 _explosionPos)
         {
             enemyState = EnemyState.Dead;
+            rigidBody.isKinematic = true;
 
-            foreach (GameObject _fx in explosionEffects) _fx.SetActive(true);
+            //Disable all enemy meshes
             foreach (MeshRenderer _rend in enemyMeshes) _rend.enabled = false;
+            captureSphere.SetActive(false);
+
+            //Play explosion VFX
+            explosionObj = gameManager.objectPooler.enemyExplosionPool.GetPooledObject();
+            explosionObj.transform.position = _explosionPos;
+            explosionObj.SetActive(true);
 
             //Set explosion SFX
             PlaySFX(explosionSFX);
@@ -343,11 +398,8 @@ namespace SpellBind
 
         private void PlayAnimation(string _trigger)
         {
-            if(!currentAnimTrigger.Equals(_trigger))
-            {
-                currentAnimTrigger = _trigger;
-                enemyAnimator.SetTrigger(_trigger);
-            }
+            Debug.LogFormat("<color=green>Current Anim: {0}</color>", enemyAnimator.GetCurrentAnimatorClipInfo(0)[0].clip);
+            enemyAnimator.SetTrigger(_trigger);
         }
 
         /// <summary>
@@ -356,6 +408,7 @@ namespace SpellBind
         private void DisableSelf()
         {
             gameObject.SetActive(false);
+            if(explosionObj != null) explosionObj.SetActive(false);
         }
     }
 }

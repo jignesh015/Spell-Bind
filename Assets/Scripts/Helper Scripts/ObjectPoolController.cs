@@ -9,6 +9,7 @@ namespace SpellBind
         [Header("PARTICLE EFFECTS")]
         public ObjectPooler playerFireballPool;
         public ObjectPooler enemySparkPool;
+        public ObjectPooler enemyExplosionPool;
 
         [Header("SPELL BOMBS")]
         public ObjectPooler spellBombSingleShotObjPool;

@@ -233,13 +233,20 @@ namespace SpellBind
             if (currentlySelectedInteractable.interactableType == InteractableType.Enemy)
             {
                 //Capture this enemy
-                currentlySelectedInteractable.GetComponent<Enemies>().OnCaptured();
+                currentlySelectedInteractable.GetComponent<Enemies>().IsCaptured();
             }
         }
 
         public void SmashThings()
         {
-
+            if (currentlySelectedInteractable == null) return;
+            if (currentlySelectedInteractable.interactableType == InteractableType.Enemy)
+            {
+                //Smash this enemy
+                currentlySelectedInteractable.GetComponent<Enemies>().IsSmashed();
+                isControllingInteractable = false;
+                currentlySelectedInteractable = null;
+            }
         }
 
         public void AttackThings()

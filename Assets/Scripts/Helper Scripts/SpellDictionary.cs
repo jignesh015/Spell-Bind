@@ -37,7 +37,7 @@ namespace SpellBind
         public static List<string> smashSpellDictionary = new List<string>()
         {
             "smash", "dash", "smell", "smack", "snack", "snooze", "splash", "clash",
-            "smashed", "mash", "mesh", "mashed", "flash"
+            "smashed", "mash", "mesh", "mashed", "flash", "message", "massage"
         };
         public static List<string> attackSpellDictionary = new List<string>()
         {
@@ -50,7 +50,8 @@ namespace SpellBind
             "heyjack", "hate", "ihate", "artic", "artec", "aztec", "heydec",
             "hectic", "heretic", "itake", "illtake", "anddad", "idad",
             "untack", "untick", "until", "uncle", "ankle", "attime",
-            "hidan", "untapped", "ontime", "atime"
+            "hidan", "untapped", "ontime", "atime", "tech", "tank", "atank",
+            "hitank", "atech"
         };
     }
 }

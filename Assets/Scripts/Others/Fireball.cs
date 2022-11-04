@@ -17,12 +17,14 @@ namespace SpellBind
         private bool isAttacking;
 
         private Rigidbody rigidBody;
+        private AudioSource audioSource;
 
         private float timeSinceAlive;
 
         private void Awake()
         {
             rigidBody = GetComponent<Rigidbody>();
+            audioSource = GetComponent<AudioSource>();
         }
 
         // Start is called before the first frame update
@@ -56,6 +58,7 @@ namespace SpellBind
             try
             {
                 rigidBody.velocity = (_victimPos - _startPos).normalized * speed;
+                audioSource.Play();
             }
             catch(Exception e)
             {
@@ -79,7 +82,7 @@ namespace SpellBind
                 if(_enemy.enemyType == EnemyType.Attacker)
                 {
                     //Damage enemy
-                    _enemy.OnEnemyAttacked(damage);
+                    _enemy.IsAttacked(damage);
                     Invoke(nameof(DisableFireball), 0.1f);
                 }
             }

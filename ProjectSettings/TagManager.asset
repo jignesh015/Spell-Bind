@@ -17,8 +17,8 @@ TagManager:
   - EnemyFireball
   - Player
   - PlayerFireball
-  - 
-  - 
+  - Ground
+  - SmashCollider
   - 
   - 
   - 
