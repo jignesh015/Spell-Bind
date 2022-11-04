@@ -57,8 +57,10 @@ namespace SpellBind
         private float timeSinceCaptured;
         private float captureDuration;
 
+        //Animator variables
         private Animator enemyAnimator;
         private List<string> animTriggers;
+        private string currentAnimTrigger = "";
         
         // Start is called before the first frame update
         void Start()
@@ -71,7 +73,8 @@ namespace SpellBind
             fireball.gameObject.SetActive(false);
             nextAttackDelay = Random.Range(minAttackPeriod, maxAttackPeriod);
 
-            animTriggers = new List<string>() { "Idle", "Attacking", "Dodging", "IsAttacked", "IsSpellbombed" };
+            animTriggers = new List<string>() { "Idle", "Attacking", "Dodging", "IsAttacked", 
+                "IsSpellbombed", "IsCaptured" };
         }
 
         private void OnEnable()
@@ -144,7 +147,6 @@ namespace SpellBind
         /// </summary>
         public void Attack()
         {
-            Debug.LogFormat("Current state: {0}", enemyAnimator.GetCurrentAnimatorClipInfo(0)[0].clip.name);
             timeSinceLastAttack = 0;
             nextAttackDelay = Random.Range(minAttackPeriod, maxAttackPeriod);
 
@@ -238,6 +240,11 @@ namespace SpellBind
 
                 captureDuration = Random.Range(minCaptureDuration, maxCaptureDuration);
                 timeSinceCaptured = 0;
+
+                //TODO: Play captured SFX
+
+                //Play captured animation
+                PlayAnimation(animTriggers[5]);
             }
         }
 
@@ -247,6 +254,7 @@ namespace SpellBind
         public void OnEscapeCapturedState()
         {
             enemyState = EnemyState.Attacking;
+            PlayAnimation(animTriggers[0]);
             StartCoroutine(Escaping());
         }
 
@@ -335,9 +343,9 @@ namespace SpellBind
 
         private void PlayAnimation(string _trigger)
         {
-            if(!enemyAnimator.GetCurrentAnimatorClipInfo(0)[0].clip.name.Equals(_trigger))
+            if(!currentAnimTrigger.Equals(_trigger))
             {
-                Debug.LogFormat("<color=green>Play Animation: {0}</color>",_trigger);
+                currentAnimTrigger = _trigger;
                 enemyAnimator.SetTrigger(_trigger);
             }
         }
