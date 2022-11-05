@@ -3946,6 +3946,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: Attacker
       objectReference: {fileID: 0}
+    - target: {fileID: 1321584296895681359, guid: d4f31dcbd7899a64b985c22d1b5c42f5,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6550543382984875969, guid: d4f31dcbd7899a64b985c22d1b5c42f5,
+        type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6550543382984875969, guid: d4f31dcbd7899a64b985c22d1b5c42f5,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d4f31dcbd7899a64b985c22d1b5c42f5, type: 3}
 --- !u!1001 &188315682086301351
@@ -4719,11 +4734,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Dodger
       objectReference: {fileID: 0}
-    - target: {fileID: 4067959360302330664, guid: 116205b7fe30af94494b9f8bd74cb3c5,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 4067959360302330665, guid: 116205b7fe30af94494b9f8bd74cb3c5,
         type: 3}
       propertyPath: m_RootOrder
@@ -4777,6 +4787,16 @@ PrefabInstance:
     - target: {fileID: 4067959360302330665, guid: 116205b7fe30af94494b9f8bd74cb3c5,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7174308495163982424, guid: 116205b7fe30af94494b9f8bd74cb3c5,
+        type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7174308495163982424, guid: 116205b7fe30af94494b9f8bd74cb3c5,
+        type: 3}
+      propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

@@ -167,5 +167,20 @@ PrefabInstance:
       propertyPath: TrailModule.colorOverLifetime.maxColor.r
       value: 0.0627451
       objectReference: {fileID: 0}
+    - target: {fileID: 6909875888522654952, guid: d4f31dcbd7899a64b985c22d1b5c42f5,
+        type: 3}
+      propertyPath: m_Color.b
+      value: 0.30588236
+      objectReference: {fileID: 0}
+    - target: {fileID: 6909875888522654952, guid: d4f31dcbd7899a64b985c22d1b5c42f5,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 0.92549026
+      objectReference: {fileID: 0}
+    - target: {fileID: 6909875888522654952, guid: d4f31dcbd7899a64b985c22d1b5c42f5,
+        type: 3}
+      propertyPath: m_Color.r
+      value: 0.47450984
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d4f31dcbd7899a64b985c22d1b5c42f5, type: 3}

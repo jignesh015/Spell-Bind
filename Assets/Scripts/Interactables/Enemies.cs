@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Rendering;
+using UnityEngine.UI;
 
 namespace SpellBind
 {
@@ -13,7 +13,8 @@ namespace SpellBind
         public EnemyState enemyState;
 
         [Header("ENEMY THRESHOLDS")]
-        [SerializeField] private int health = 50;
+        [SerializeField] private int maxHealth = 50;
+        [SerializeField] private float currentHealth;
 
         [Header("ATTACK THRESHOLDS")]
         [SerializeField] private float minAttackPeriod = 3;
@@ -52,6 +53,7 @@ namespace SpellBind
         private GameManager gameManager;
         private AudioSource enemyAudioSource;
         private CapsuleCollider capsuleCollider;
+        private Slider healthBar;
 
         //Attack Variables
         private float timeSinceLastAttack;
@@ -78,7 +80,9 @@ namespace SpellBind
             gameManager = GameManager.Instance;
             enemyAudioSource = GetComponent<AudioSource>();
             enemyAnimator = GetComponent<Animator>();
+            healthBar = GetComponentInChildren<Slider>();
 
+            currentHealth = maxHealth;
             fireball.gameObject.SetActive(false);
             nextAttackDelay = Random.Range(minAttackPeriod, maxAttackPeriod);
 
@@ -97,14 +101,22 @@ namespace SpellBind
         {
             base.Initialize();
 
+            //Reset Health
+            currentHealth = maxHealth;
+
             //Enable all colliders
             capsuleCollider = GetComponentInChildren<CapsuleCollider>();
             capsuleCollider.enabled = true;
+
+            //Enable all enemy meshes and UI
+            foreach (MeshRenderer _rend in enemyMeshes) _rend.enabled = true;
+            healthBar.gameObject.SetActive(true);
         }
 
         // Update is called once per frame
         void Update()
         {
+            healthBar.value = Mathf.Lerp(healthBar.value, currentHealth/maxHealth, Time.deltaTime);
             switch(enemyState)
             {
                 case EnemyState.Attacking:
@@ -239,8 +251,8 @@ namespace SpellBind
         {
             StopHighlight();
 
-            health -= _damage;
-            if (health <= 0)
+            currentHealth -= _damage;
+            if (currentHealth <= 0)
             {
                 ExplodeSelf(transform.position);
             }
@@ -320,8 +332,8 @@ namespace SpellBind
         {
             enemyState = EnemyState.Spellbombed;
 
-            health -= _damage;
-            if (health <= 0)
+            currentHealth -= _damage;
+            if (currentHealth <= 0)
             {
                 ExplodeSelf(transform.position);
             }
@@ -344,9 +356,10 @@ namespace SpellBind
             enemyState = EnemyState.Dead;
             rigidBody.isKinematic = true;
 
-            //Disable all enemy meshes
+            //Disable all enemy meshes and UI
             foreach (MeshRenderer _rend in enemyMeshes) _rend.enabled = false;
             captureSphere.SetActive(false);
+            healthBar.gameObject.SetActive(false);
 
             //Play explosion VFX
             explosionObj = gameManager.objectPooler.enemyExplosionPool.GetPooledObject();
