@@ -49,6 +49,7 @@ namespace SpellBind
         [Header("SFX REFERENCES")]
         [SerializeField] private AudioClip explosionSFX;
         [SerializeField] private AudioClip sparkSFX;
+        [SerializeField] private AudioClip incorrectCommandSFX;
 
         private GameManager gameManager;
         private AudioSource enemyAudioSource;
@@ -74,19 +75,23 @@ namespace SpellBind
 
         private GameObject explosionObj;
 
+        private void Awake()
+        {
+            enemyAudioSource = GetComponent<AudioSource>();
+            enemyAnimator = GetComponent<Animator>();
+            healthBar = GetComponentInChildren<Slider>();
+        }
+
         // Start is called before the first frame update
         void Start()
         {
             gameManager = GameManager.Instance;
-            enemyAudioSource = GetComponent<AudioSource>();
-            enemyAnimator = GetComponent<Animator>();
-            healthBar = GetComponentInChildren<Slider>();
 
             currentHealth = maxHealth;
             fireball.gameObject.SetActive(false);
             nextAttackDelay = Random.Range(minAttackPeriod, maxAttackPeriod);
 
-            animTriggers = new List<string>() { "Idle", "Attacking", "Dodging", "IsAttacked", 
+            animTriggers = new List<string>() { "Idle", "Attacking", "Dodging", "IsAttacked",
                 "IsSpellbombed", "IsCaptured" };
 
             mainColor = enemyMeshes[0].material.GetColor("_EmissionColor");
@@ -279,6 +284,7 @@ namespace SpellBind
                 StopHighlight();
                 enemyState = EnemyState.Captured;
                 captureSphere.SetActive(true);
+                captureSphere.GetComponent<Animator>().SetTrigger("Enter");
 
                 captureDuration = Random.Range(minCaptureDuration, maxCaptureDuration);
                 timeSinceCaptured = 0;
@@ -287,6 +293,10 @@ namespace SpellBind
 
                 //Play captured animation
                 PlayAnimation(animTriggers[5]);
+            }
+            else
+            {
+                OnEscapeCapturedState(true);
             }
         }
 
@@ -306,23 +316,31 @@ namespace SpellBind
                 rigidBody.isKinematic = false;
                 rigidBody.velocity = Vector3.down * smashSpeed;
             }
+            else
+            {
+                PlaySFX(incorrectCommandSFX);
+            }
         }
 
         /// <summary>
         /// This function is called when the enemy escapes the captured state
         /// </summary>
-        public void OnEscapeCapturedState()
+        public void OnEscapeCapturedState(bool _isUncapturable = false)
         {
             enemyState = EnemyState.Attacking;
             PlayAnimation(animTriggers[0]);
-            StartCoroutine(Escaping());
+            StartCoroutine(Escaping(_isUncapturable));
         }
 
-        private IEnumerator Escaping()
+        private IEnumerator Escaping(bool _isUncapturable)
         {
-            captureSphere.GetComponent<Animator>().SetTrigger("Escape");
-            yield return new WaitForSeconds(0.55f);
+            captureSphere.SetActive(true);
+            captureSphere.GetComponent<Animator>().SetTrigger(_isUncapturable ? "Error" : "Escape");
+            yield return new WaitForSeconds(0.4f);
+            PlaySFX(incorrectCommandSFX);
+            yield return new WaitForSeconds(0.6f);
             captureSphere.SetActive(false);
+
         }
 
         /// <summary>
@@ -411,7 +429,7 @@ namespace SpellBind
 
         private void PlayAnimation(string _trigger)
         {
-            Debug.LogFormat("<color=green>Current Anim: {0}</color>", enemyAnimator.GetCurrentAnimatorClipInfo(0)[0].clip);
+            //Debug.LogFormat("<color=green>Current Anim: {0}</color>", enemyAnimator.GetCurrentAnimatorClipInfo(0)[0].clip);
             enemyAnimator.SetTrigger(_trigger);
         }
 

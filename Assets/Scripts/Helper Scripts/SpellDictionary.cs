@@ -51,7 +51,7 @@ namespace SpellBind
             "hectic", "heretic", "itake", "illtake", "anddad", "idad",
             "untack", "untick", "until", "uncle", "ankle", "attime",
             "hidan", "untapped", "ontime", "atime", "tech", "tank", "atank",
-            "hitank", "atech"
+            "hitank", "atech", "hited", "heighted"
         };
     }
 }
