@@ -360,11 +360,14 @@ namespace SpellBind
             }
             else
             {
-                //TODO: Play attacked VFX
+                //Play spellbombed VFX
                 StartCoroutine(PlaySparkVFX());
 
-                //TODO: Play attacked SFX
+                //Play spellbombed SFX
                 PlaySFX(sparkSFX);
+
+                //Play spellbombed animation
+                PlayAnimation(animTriggers[4]);
             }
 
         }
