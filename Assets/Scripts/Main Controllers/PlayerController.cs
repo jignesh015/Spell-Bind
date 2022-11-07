@@ -19,6 +19,10 @@ namespace SpellBind
         public CapsuleCollider playerCollider;
         [SerializeField] private float playerColliderOffset;
 
+        [Header("PLAYER DAMAGE")]
+        [SerializeField] private Animator damageAnim;
+
+
         #region PRIVATE VARIABLES
         private Enemies enemyToAttack;
         private bool hasAttacked;
@@ -34,6 +38,7 @@ namespace SpellBind
             Vector3 _colliderPos = playerCollider.transform.position;
 #if UNITY_EDITOR
             _yOffset = playerColliderOffset * -1;
+            damageAnim.transform.localScale = Vector3.one;
 #endif
             playerCollider.transform.position = new Vector3(_colliderPos.x, _yOffset, _colliderPos.z);
         }
@@ -88,8 +93,9 @@ namespace SpellBind
         public void OnPlayerAttacked(int _damage)
         {
             playerHealth -= _damage;
+            damageAnim.SetTrigger("Damage");
 
-            if(playerHealth < 0)
+            if (playerHealth < 0)
             {
                 playerHealth = 0;
 
