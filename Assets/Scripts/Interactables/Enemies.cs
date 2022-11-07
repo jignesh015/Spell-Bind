@@ -257,6 +257,7 @@ namespace SpellBind
             StopHighlight();
 
             currentHealth -= _damage;
+            timeSinceLastAttack = 0;
             if (currentHealth <= 0)
             {
                 ExplodeSelf(transform.position);
@@ -288,6 +289,7 @@ namespace SpellBind
 
                 captureDuration = Random.Range(minCaptureDuration, maxCaptureDuration);
                 timeSinceCaptured = 0;
+                timeSinceLastAttack = 0;
 
                 //TODO: Play captured SFX
 
@@ -351,6 +353,7 @@ namespace SpellBind
             enemyState = EnemyState.Spellbombed;
 
             currentHealth -= _damage;
+            timeSinceLastAttack = 0;
             if (currentHealth <= 0)
             {
                 ExplodeSelf(transform.position);
@@ -425,6 +428,7 @@ namespace SpellBind
                 }
             }
             _sparkEffect.SetActive(false);
+            enemyState = EnemyState.Attacking;
         }
 
         private void PlayAnimation(string _trigger)

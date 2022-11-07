@@ -137,18 +137,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 75501731077163205}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &76277366 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 75501731001396915, guid: d4f31dcbd7899a64b985c22d1b5c42f5,
-    type: 3}
-  m_PrefabInstance: {fileID: 75501731077163205}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 84cf3877748a56d4d83067b348f725b7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &92563722
 GameObject:
   m_ObjectHideFlags: 0
@@ -2001,6 +1989,18 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 703573240966399759}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1464720061 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 634906729448731398, guid: 214c78e7a1bbce141927ad3c70b480f1,
+    type: 3}
+  m_PrefabInstance: {fileID: 703573240966399759}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84cf3877748a56d4d83067b348f725b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1502866972
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2654,7 +2654,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentLevelNo: 1
   spawnedEnemies:
-  - {fileID: 76277366}
+  - {fileID: 1464720061}
   spawnedSpellBombs: []
   spellBombSpawnLocation:
   - {fileID: 300646846}
