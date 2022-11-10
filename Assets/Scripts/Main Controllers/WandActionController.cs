@@ -13,10 +13,13 @@ namespace SpellBind
 
         [Header("WAND REFERENCES")]
         [SerializeField] private Transform wandRaycastPoint;
+        [SerializeField] private Transform wandOriginPoint;
+        [SerializeField] private Transform wandTransform;
         [SerializeField] private LineRenderer wandRaycastRenderer;
         [SerializeField] private List<Transform> wandRaycastRendererPoints;
         [SerializeField] private float wandRaycastDistance;
         [SerializeField] private float wandRaycastRendererCurveOffset;
+        [SerializeField] private float wandLerpSpeed;
 
         [Header("INTERACTABLES REFERENCES")]
         [SerializeField] private string[] interactableLayerNames;
@@ -80,6 +83,16 @@ namespace SpellBind
             }
             #endregion
 
+            //Check if user is grabbing the wand
+            //If not, lerp the wand to its origin point
+            if(!gameManager.playerController.isGrabbingWand && 
+                Vector3.Distance(wandTransform.position, wandOriginPoint.position) > 0.01f)
+            {
+                wandTransform.position = Vector3.Lerp(wandTransform.position, wandOriginPoint.position, Time.deltaTime * wandLerpSpeed);
+                wandTransform.rotation = Quaternion.Lerp(wandTransform.rotation, wandOriginPoint.rotation, Time.deltaTime * wandLerpSpeed);
+            }
+
+            //Check for interactions with wand
             if (!isControllingInteractable)
             {
                 //Check if the raycast hits any interactables
@@ -159,8 +172,7 @@ namespace SpellBind
         /// </summary>
         public void OnWandGrab()
         {
-            //Activate Wit
-            //witActivation.ActivateWit();
+            gameManager.playerController.isGrabbingWand = true;
         }
 
         /// <summary>
@@ -168,6 +180,8 @@ namespace SpellBind
         /// </summary>
         public void OnWandDrop()
         {
+            gameManager.playerController.isGrabbingWand = false;
+
             //Deactivate Wit
             witActivation.DeactivateWit();
 
