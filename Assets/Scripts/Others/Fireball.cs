@@ -86,6 +86,12 @@ namespace SpellBind
                     Invoke(nameof(DisableFireball), 0.1f);
                 }
             }
+            else if(collision.gameObject.name.Contains("ForceField"))
+            {
+                //Destroy fireball 
+                GameManager.Instance.playerController.OnFireballCollisionWithForceField(collision.GetContact(0).point);
+                Invoke(nameof(DisableFireball), 0.1f);
+            }
         }
 
         private void DisableFireball()
