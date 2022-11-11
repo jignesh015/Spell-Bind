@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -58,7 +59,7 @@ namespace SpellBind
         private Slider healthBar;
 
         //Attack Variables
-        private Vector3 attackPosition;
+        [HideInInspector]public Transform attackLocation;
         private float timeSinceLastAttack;
         private float nextAttackDelay;
         private bool isPreparedForAttack;
@@ -66,6 +67,7 @@ namespace SpellBind
         //Captured Variables
         private float timeSinceCaptured;
         private float captureDuration;
+        private Action escapeCallback;
 
         //Animator Variables
         private Animator enemyAnimator;
@@ -91,7 +93,7 @@ namespace SpellBind
 
             currentHealth = maxHealth;
             fireball.gameObject.SetActive(false);
-            nextAttackDelay = Random.Range(minAttackPeriod, maxAttackPeriod);
+            nextAttackDelay = UnityEngine.Random.Range(minAttackPeriod, maxAttackPeriod);
 
             animTriggers = new List<string>() { "Idle", "Attacking", "Dodging", "IsAttacked",
                 "IsSpellbombed", "IsCaptured" };
@@ -102,6 +104,12 @@ namespace SpellBind
         private void OnEnable()
         {
             Initialize();
+        }
+
+        private void OnDisable()
+        {
+            //Remove enemy from spawnedEnemies list
+            if(gameManager) gameManager.RemoveEnemyFromSpawnList(this);
         }
 
         public override void Initialize()
@@ -130,19 +138,18 @@ namespace SpellBind
                     //Look at the player
                     transform.LookAt(gameManager.playerController.GetPlayerPos());
 
-                    //Check if attack position is set or not
-                    if (attackPosition == null || attackPosition == Vector3.zero) return;
+                    //Check if attack location is set or not
+                    if (attackLocation == null) return;
 
-                    //Get to the attack position
-                    float _dist = Mathf.Abs(Vector3.Distance(transform.position, attackPosition));
+                    //Get to the attack location
+                    float _dist = Mathf.Abs(Vector3.Distance(transform.position, attackLocation.position));
                     if (_dist > 0.5f)
                     {
-                        transform.position = Vector3.Lerp(transform.position, attackPosition, 
+                        transform.position = Vector3.Lerp(transform.position, attackLocation.position, 
                             Time.deltaTime * attackPosSpeed);
                     }
                     else
                     {
-                        //transform.position = attackPosition;
                         enemyState = EnemyState.Attacking;
                     }
                     break;
@@ -192,11 +199,6 @@ namespace SpellBind
             outline.enabled = false;
         }
 
-        public void SetAttackPosition(Vector3 _position)
-        {
-            attackPosition = _position;
-        }
-
         /// <summary>
         /// This function is called when enemy is about to attack
         /// </summary>
@@ -219,7 +221,7 @@ namespace SpellBind
         {
             timeSinceLastAttack = 0;
             isPreparedForAttack = false;
-            nextAttackDelay = Random.Range(minAttackPeriod, maxAttackPeriod);
+            nextAttackDelay = UnityEngine.Random.Range(minAttackPeriod, maxAttackPeriod);
 
             //Attack the player
             fireball.gameObject.SetActive(true);
@@ -235,7 +237,7 @@ namespace SpellBind
         /// </summary>
         public void Dodge()
         {
-            if(Random.value <= dodgeProbability)
+            if(UnityEngine.Random.value <= dodgeProbability)
                 StartCoroutine(IsDodging());
         }
 
@@ -247,7 +249,7 @@ namespace SpellBind
 
             yield return new WaitForSeconds(0.2f);
 
-            Vector3 _dodgeDirection = Random.value <= 0.5f ? Vector3.right : Vector3.left;
+            Vector3 _dodgeDirection = UnityEngine.Random.value <= 0.5f ? Vector3.right : Vector3.left;
             Vector3 _startPos = transform.position;
             Vector3 _endPos = _startPos + (_dodgeDirection * dodgeOffsetX);
             float _elapsedTime = 0;
@@ -305,16 +307,17 @@ namespace SpellBind
         /// <summary>
         /// This function is called when the enemy is captured by the player
         /// </summary>
-        public void IsCaptured()
+        public void IsCaptured(Action _escapeCallback)
         {
-            if(enemyType == EnemyType.Attacker || enemyType == EnemyType.Dodger)
+            escapeCallback = _escapeCallback;
+            if (enemyType == EnemyType.Attacker || enemyType == EnemyType.Dodger)
             {
                 StopHighlight();
                 enemyState = EnemyState.Captured;
                 captureSphere.SetActive(true);
                 captureSphere.GetComponent<Animator>().SetTrigger("Enter");
 
-                captureDuration = Random.Range(minCaptureDuration, maxCaptureDuration);
+                captureDuration = UnityEngine.Random.Range(minCaptureDuration, maxCaptureDuration);
                 timeSinceCaptured = 0;
                 timeSinceLastAttack = 0;
 
@@ -357,6 +360,8 @@ namespace SpellBind
         public void OnEscapeCapturedState(bool _isUncapturable = false)
         {
             enemyState = EnemyState.Attacking;
+            escapeCallback?.Invoke();
+            StopHighlight();
             PlayAnimation(animTriggers[0]);
             StartCoroutine(Escaping(_isUncapturable));
         }

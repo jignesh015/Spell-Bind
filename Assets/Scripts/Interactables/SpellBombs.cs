@@ -148,7 +148,7 @@ namespace SpellBind
             switch(spellBombType)
             {
                 case SpellBombType.SingleShot:
-                    isThrownTowards = GameManager.Instance.GetClosestEnemy();
+                    isThrownTowards = GameManager.Instance.GetClosestEnemy(transform.position);
                     break;
                 case SpellBombType.MultiShot:
                     //Get multiple enemies

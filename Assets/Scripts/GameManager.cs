@@ -49,12 +49,16 @@ namespace SpellBind
             playerController = FindObjectOfType<PlayerController>();
             wandActionController = FindObjectOfType<WandActionController>();
             objectPooler = FindObjectOfType<ObjectPoolController>();
+
+            //Initialize lists
+            spawnedEnemies = new List<Enemies>();
+            spawnedSpellBombs = new List<SpellBombs>();
         }
 
         // Start is called before the first frame update
         void Start()
         {
-            InitiateLevel(1);
+            StartCoroutine(InitiateLevel(1));
         }
 
         // Update is called once per frame
@@ -67,11 +71,17 @@ namespace SpellBind
         /// This function will initialize the given level
         /// </summary>
         /// <param name="_levelNo"></param>
-        public void InitiateLevel(int _levelNo)
+        /// <returns></returns>
+        public IEnumerator InitiateLevel(int _levelNo)
         {
             //TODO: Create level serialized class
 
+            yield return new WaitForSeconds(0.5f);
             SpawnEnemy(EnemyType.Attacker, enemySpawnLocation[Random.Range(0, enemySpawnLocation.Count)].position);
+            yield return new WaitForSeconds(3f);
+            SpawnEnemy(EnemyType.Buffed, enemySpawnLocation[Random.Range(0, enemySpawnLocation.Count)].position);
+            yield return new WaitForSeconds(5f);
+            SpawnEnemy(EnemyType.Dodger, enemySpawnLocation[Random.Range(0, enemySpawnLocation.Count)].position);
 
             SpawnBomb(SpellBombType.SingleShot,
                 spellBombSpawnLocation[Random.Range(0, spellBombSpawnLocation.Count)].position);
@@ -83,6 +93,7 @@ namespace SpellBind
         /// <param name="_spawnPos"></param>
         public Enemies SpawnEnemy(EnemyType _enemyType, Vector3 _spawnPos)
         {
+            //Get enemy object of the given type from the pool and activate it
             ObjectPooler _enemyObjPooler = objectPooler.attackerEnemyObjPool;
             switch(_enemyType)
             {
@@ -97,11 +108,25 @@ namespace SpellBind
             }
             GameObject _enemyObj = _enemyObjPooler.GetPooledObject();
             _enemyObj.transform.position = _spawnPos;
-            _enemyObj.SetActive(true);
-            Enemies _enemy = _enemyObj.GetComponent<Enemies>();
-            _enemy.SetAttackPosition(enemyAttackLocation[Random.Range(0, enemyAttackLocation.Count)].position);
-            return _enemy;
 
+            //Search for the available attack location and assign it to the spawned enemy
+            Enemies _enemy = _enemyObj.GetComponent<Enemies>();
+            int _randomIndex = Random.Range(0, enemyAttackLocation.Count);
+            Transform _attackLoc = enemyAttackLocation[_randomIndex];
+            bool _iLocTaken = spawnedEnemies.Exists(e => e.attackLocation == _attackLoc);
+            while (_iLocTaken)
+            {
+                _attackLoc = enemyAttackLocation[Random.Range(0, enemyAttackLocation.Count)];
+                _iLocTaken = spawnedEnemies.Exists(e => e.attackLocation == _attackLoc);
+            }
+            _enemy.attackLocation = _attackLoc;
+            _enemyObj.SetActive(true);
+
+            //Add the enemy to the spawnedEnemyies list
+            spawnedEnemies.Add(_enemy);
+
+            //Return the enemy obj
+            return _enemy;
         }
 
         /// <summary>
@@ -140,16 +165,29 @@ namespace SpellBind
         /// Returns the enemy closest to the wand raycast
         /// </summary>
         /// <returns></returns>
-        public Transform GetClosestEnemy()
+        public Transform GetClosestEnemy(Vector3 _from)
         {
-            //TO DO: Get closest enemy
-            return spawnedEnemies[0].transform;
+            if (spawnedEnemies.Count == 0) return null;
+            Transform _closestEnemy = spawnedEnemies[0].transform;
+            float _distanceToEnemy = Mathf.Abs(Vector3.Distance(_closestEnemy.position, _from));
+            for (int i = 1; i < spawnedEnemies.Count; i++)
+            {
+                float _newDist = Mathf.Abs(Vector3.Distance(spawnedEnemies[i].transform.position, _from));
+                if (_newDist < _distanceToEnemy)
+                {
+                    _distanceToEnemy = _newDist;
+                    _closestEnemy = spawnedEnemies[i].transform;
+                }
+            }
+            return _closestEnemy;
         }
 
+        /// <summary>
+        /// Returns all the spawned enemies
+        /// </summary>
+        /// <returns></returns>
         public List<Transform> GetAllEnemies()
         {
-            //TODO: Return all the spawned and alive enemies
-
             List<Transform> _enemies = new List<Transform>();
             foreach(Enemies _enemy in spawnedEnemies)
             {
@@ -159,6 +197,12 @@ namespace SpellBind
                 }
             }
             return _enemies;
+        }
+
+        public void RemoveEnemyFromSpawnList(Enemies _enemyToRemove)
+        {
+            if (spawnedEnemies.Count > 0 && spawnedEnemies.Contains(_enemyToRemove))
+                spawnedEnemies.Remove(_enemyToRemove);
         }
     }
 }

@@ -28,9 +28,8 @@ namespace SpellBind
         private RaycastHit wandRaycastHit;
         private int interactableLayerMask;
 
-        private bool isControllingInteractable;
-
-        [SerializeField]private InteractableController currentlySelectedInteractable;
+        [SerializeField] private bool isControllingInteractable;
+        [SerializeField] private InteractableController currentlySelectedInteractable;
         private float distanceToInteractable;
 
         private GameManager gameManager;
@@ -92,70 +91,80 @@ namespace SpellBind
                 wandTransform.rotation = Quaternion.Lerp(wandTransform.rotation, wandOriginPoint.rotation, Time.deltaTime * wandLerpSpeed);
             }
 
-            //Check for interactions with wand
-            if (!isControllingInteractable)
+            if(gameManager.playerController.isGrabbingWand)
             {
-                //Check if the raycast hits any interactables
-                if (Physics.Raycast(wandRaycastPoint.position,
-                wandRaycastPoint.TransformDirection(Vector3.forward), out wandRaycastHit, wandRaycastDistance, interactableLayerMask))
+                //Check for interactions with wand
+                if (!isControllingInteractable)
                 {
-                    Debug.DrawRay(wandRaycastPoint.position,
-                        wandRaycastPoint.TransformDirection(Vector3.forward) * wandRaycastHit.distance, Color.yellow);
-
-                    DrawWandRaycastRenderer(wandRaycastPoint.position, wandRaycastHit.point);
-
-                    //Assign current interactable if not null and activate voice command module
-                    var _interactable = wandRaycastHit.collider.GetComponentInParent<InteractableController>();
-                    if (_interactable != null && currentlySelectedInteractable != _interactable)
+                    //Check if the raycast hits any interactables
+                    if (Physics.Raycast(wandRaycastPoint.position,
+                    wandRaycastPoint.TransformDirection(Vector3.forward), out wandRaycastHit, wandRaycastDistance, interactableLayerMask))
                     {
-                        if (_interactable.interactableType == InteractableType.SpellBomb
-                            && _interactable.GetComponent<SpellBombs>().spellBombState == SpellBombState.Thrown)
-                            return;
-                        
-                        if(currentlySelectedInteractable != null)
-                        {
-                            wandRaycastRenderer.enabled = false;
-                            currentlySelectedInteractable.StopHighlight();
-                        }
-                        currentlySelectedInteractable = _interactable;
-                        currentlySelectedInteractable.Highlight();
-                        if (!witActivation.IsActive()) witActivation.ActivateWit();
+                        Debug.DrawRay(wandRaycastPoint.position,
+                            wandRaycastPoint.TransformDirection(Vector3.forward) * wandRaycastHit.distance, Color.yellow);
 
-                        //Get distance to interactable
-                        distanceToInteractable = Mathf.Abs(Vector3.Distance(wandRaycastPoint.position,
-                            currentlySelectedInteractable.transform.position));
+                        DrawWandRaycastRenderer(wandRaycastPoint.position, wandRaycastHit.point);
+
+                        //Assign current interactable if not null and activate voice command module
+                        var _interactable = wandRaycastHit.collider.GetComponentInParent<InteractableController>();
+                        if (_interactable != null && currentlySelectedInteractable != _interactable)
+                        {
+                            if (_interactable.interactableType == InteractableType.SpellBomb
+                                && _interactable.GetComponent<SpellBombs>().spellBombState == SpellBombState.Thrown)
+                                return;
+
+                            if (currentlySelectedInteractable != null)
+                            {
+                                wandRaycastRenderer.enabled = false;
+                                currentlySelectedInteractable.StopHighlight();
+                            }
+                            currentlySelectedInteractable = _interactable;
+                            currentlySelectedInteractable.Highlight();
+                            if (!witActivation.IsActive()) witActivation.ActivateWit();
+
+                            //Get distance to interactable
+                            distanceToInteractable = Mathf.Abs(Vector3.Distance(wandRaycastPoint.position,
+                                currentlySelectedInteractable.transform.position));
+                        }
+                    }
+                    else
+                    {
+                        wandRaycastRenderer.enabled = false;
+                        if (currentlySelectedInteractable != null)
+                        {
+                            currentlySelectedInteractable.StopHighlight();
+                            currentlySelectedInteractable = null;
+                        }
+
+                        if (witActivation.IsActive()) witActivation.DeactivateWit();
                     }
                 }
                 else
                 {
-                    wandRaycastRenderer.enabled = false;
-                    if(currentlySelectedInteractable != null)
+                    if (currentlySelectedInteractable != null)
                     {
-                        currentlySelectedInteractable.StopHighlight();
-                        currentlySelectedInteractable = null;
+                        //Draw raycast renderer to the interactable
+                        DrawWandRaycastRenderer(wandRaycastPoint.position, currentlySelectedInteractable.transform.position);
+
+                        //Make interactable follow the raycast if it's a spell bomb
+                        if(currentlySelectedInteractable.interactableType == InteractableType.SpellBomb) 
+                        {
+                            currentlySelectedInteractable.FollowWand(wandRaycastPoint.position +
+                                wandRaycastPoint.TransformDirection(Vector3.forward) * distanceToInteractable);
+                        }
                     }
-
-                    if (witActivation.IsActive()) witActivation.DeactivateWit();
                 }
             }
-            else
-            {
-                if (currentlySelectedInteractable != null)
-                {
-                    //Draw raycast renderer to the interactable
-                    DrawWandRaycastRenderer(wandRaycastPoint.position, currentlySelectedInteractable.transform.position);
-
-                    //Make interactable follow the raycast
-                    currentlySelectedInteractable.FollowWand(wandRaycastPoint.position +
-                        wandRaycastPoint.TransformDirection(Vector3.forward) * distanceToInteractable);
-                }
-            }
-
 
             Debug.DrawRay(wandRaycastPoint.position,
                    wandRaycastPoint.TransformDirection(Vector3.forward) * wandRaycastDistance, Color.green);
         }
 
+        /// <summary>
+        /// Draws the curved raycast from wand to the interactable position
+        /// </summary>
+        /// <param name="_startPos"></param>
+        /// <param name="_endPos"></param>
         private void DrawWandRaycastRenderer(Vector3 _startPos, Vector3 _endPos)
         {
             float _hitPointDist = Mathf.Abs(Vector3.Distance(_startPos, _endPos));
@@ -185,6 +194,10 @@ namespace SpellBind
             //Deactivate Wit
             witActivation.DeactivateWit();
 
+            //Disable wand raycast
+            wandRaycastRenderer.enabled = false;
+
+            //Drop/Release any active interactable
             DropThings();
         }
 
@@ -208,27 +221,41 @@ namespace SpellBind
             }
         }
 
+        /// <summary>
+        /// This function is called when "Fly" command is invoked
+        /// </summary>
         public void LevitateThings()
         {
             if (currentlySelectedInteractable == null) return;
             if (currentlySelectedInteractable.interactableType == InteractableType.SpellBomb)
             {
-                currentlySelectedInteractable.Levitate();
                 isControllingInteractable = true;
+                currentlySelectedInteractable.Levitate();
             }
         }
 
+        /// <summary>
+        /// This function is called when "Drop" command is invoked
+        /// </summary>
         public void DropThings()
         {
             if (currentlySelectedInteractable == null) return;
             if (currentlySelectedInteractable.interactableType == InteractableType.SpellBomb)
             {
                 currentlySelectedInteractable.Drop();
-                isControllingInteractable = false;
-                currentlySelectedInteractable = null;
             }
+            else if(currentlySelectedInteractable.interactableType == InteractableType.Enemy
+                && currentlySelectedInteractable.GetComponent<Enemies>().enemyState == EnemyState.Captured)
+            {
+                currentlySelectedInteractable.GetComponent<Enemies>().OnEscapeCapturedState();
+            }
+            isControllingInteractable = false;
+            currentlySelectedInteractable = null;
         }
 
+        /// <summary>
+        /// This function is called when "Throw" command is invoked
+        /// </summary>
         public void ThrowThings()
         {
             if (currentlySelectedInteractable == null) return;
@@ -241,16 +268,23 @@ namespace SpellBind
             }
         }
 
+        /// <summary>
+        /// This function is called when "Capture" command is invoked
+        /// </summary>
         public void CaptureThings()
         {
             if (currentlySelectedInteractable == null) return;
             if (currentlySelectedInteractable.interactableType == InteractableType.Enemy)
             {
                 //Capture this enemy
-                currentlySelectedInteractable.GetComponent<Enemies>().IsCaptured();
+                isControllingInteractable = true;
+                currentlySelectedInteractable.GetComponent<Enemies>().IsCaptured(OnEnemyEscapeCapture);
             }
         }
 
+        /// <summary>
+        /// This function is called when "Smash" command is invoked
+        /// </summary>
         public void SmashThings()
         {
             if (currentlySelectedInteractable == null) return;
@@ -263,6 +297,9 @@ namespace SpellBind
             }
         }
 
+        /// <summary>
+        /// This function is called when "Attack" command is invoked
+        /// </summary>
         public void AttackThings()
         {
             if (currentlySelectedInteractable == null) return;
@@ -275,6 +312,15 @@ namespace SpellBind
                 isControllingInteractable = false;
                 currentlySelectedInteractable = null;
             }
+        }
+
+        /// <summary>
+        /// This function is called when the enemy escapes the capture state
+        /// </summary>
+        private void OnEnemyEscapeCapture()
+        {
+            currentlySelectedInteractable = null;
+            isControllingInteractable = false;
         }
     }
 }
