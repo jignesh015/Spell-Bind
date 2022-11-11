@@ -79,6 +79,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 75501731001396915, guid: d4f31dcbd7899a64b985c22d1b5c42f5,
         type: 3}
+      propertyPath: spawnSFX
+      value: 
+      objectReference: {fileID: 8300000, guid: 55e8346046ae01d479e646fe189a3519, type: 3}
+    - target: {fileID: 75501731001396915, guid: d4f31dcbd7899a64b985c22d1b5c42f5,
+        type: 3}
       propertyPath: enemyType
       value: 2
       objectReference: {fileID: 0}

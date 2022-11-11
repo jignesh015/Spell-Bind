@@ -209,9 +209,11 @@ MonoBehaviour:
   damage: 30
   fireballSpeed: 8
   captureSphere: {fileID: 75501732565072341}
+  spawnSFX: {fileID: 8300000, guid: 55e8346046ae01d479e646fe189a3519, type: 3}
   explosionSFX: {fileID: 8300000, guid: 67db05005b8b0b74ca2d3384c5335799, type: 3}
   sparkSFX: {fileID: 8300000, guid: 3df171ff064cdc04c952760b209d9a7e, type: 3}
   incorrectCommandSFX: {fileID: 8300000, guid: 0ecc038ea4a7992429ff654007e44e68, type: 3}
+  attackLocation: {fileID: 0}
   mainColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!95 &76277370
 Animator:

@@ -9,18 +9,18 @@ namespace SpellBind
     public class Level
     {
         public int levelNo;
-        public int enemyCount;
-        public float enemySpawnRate;
+        public float minEnemySpawnGap;
+        public float maxEnemySpawnGap;
+        public int maxSpawnedEnemiesAtTime;
         public List<EnemyTypeSpawnRate> enemyTypes;
-        public List<SpellBombType> spellBombTypes;
-        public float spellBombSpawnRate;
+        public List<SpellBombTypeSpawnRate> spellBombTypes;
     }
 
     [Serializable]
     public class EnemyTypeSpawnRate
     {
         public EnemyType enemyType;
-        public float spawnRate;
+        public int spawnCount;
     }
 
     [Serializable]

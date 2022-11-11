@@ -23,12 +23,11 @@ namespace SpellBind
         [SerializeField] private LayerMask enemyLayer;
         [SerializeField] private LayerMask spellBombLayer;
 
-        [SerializeField] private Level level1;
-
         #region SCRIPT REFERENCES
         [HideInInspector] public PlayerController playerController;
         [HideInInspector] public WandActionController wandActionController;
         [HideInInspector] public ObjectPoolController objectPooler;
+        [HideInInspector] public LevelController levelController;
         #endregion
 
         private static GameManager _instance;
@@ -49,6 +48,7 @@ namespace SpellBind
             playerController = FindObjectOfType<PlayerController>();
             wandActionController = FindObjectOfType<WandActionController>();
             objectPooler = FindObjectOfType<ObjectPoolController>();
+            levelController = FindObjectOfType<LevelController>();
 
             //Initialize lists
             spawnedEnemies = new List<Enemies>();
@@ -58,7 +58,7 @@ namespace SpellBind
         // Start is called before the first frame update
         void Start()
         {
-            StartCoroutine(InitiateLevel(1));
+            levelController.InitializeLevel(1);
         }
 
         // Update is called once per frame
@@ -77,21 +77,21 @@ namespace SpellBind
             //TODO: Create level serialized class
 
             yield return new WaitForSeconds(0.5f);
-            SpawnEnemy(EnemyType.Attacker, enemySpawnLocation[Random.Range(0, enemySpawnLocation.Count)].position);
-            yield return new WaitForSeconds(3f);
-            SpawnEnemy(EnemyType.Buffed, enemySpawnLocation[Random.Range(0, enemySpawnLocation.Count)].position);
-            yield return new WaitForSeconds(5f);
-            SpawnEnemy(EnemyType.Dodger, enemySpawnLocation[Random.Range(0, enemySpawnLocation.Count)].position);
+            //SpawnEnemy(EnemyType.Attacker, enemySpawnLocation[Random.Range(0, enemySpawnLocation.Count)].position);
+            //yield return new WaitForSeconds(3f);
+            //SpawnEnemy(EnemyType.Buffed, enemySpawnLocation[Random.Range(0, enemySpawnLocation.Count)].position);
+            //yield return new WaitForSeconds(5f);
+            //SpawnEnemy(EnemyType.Dodger, );
 
-            SpawnBomb(SpellBombType.SingleShot,
-                spellBombSpawnLocation[Random.Range(0, spellBombSpawnLocation.Count)].position);
+            //SpawnBomb(SpellBombType.SingleShot,
+            //    spellBombSpawnLocation[Random.Range(0, spellBombSpawnLocation.Count)].position);
         }
 
         /// <summary>
         /// This function will spawn an enemy at the given location
         /// </summary>
         /// <param name="_spawnPos"></param>
-        public Enemies SpawnEnemy(EnemyType _enemyType, Vector3 _spawnPos)
+        public Enemies SpawnEnemy(EnemyType _enemyType)
         {
             //Get enemy object of the given type from the pool and activate it
             ObjectPooler _enemyObjPooler = objectPooler.attackerEnemyObjPool;
@@ -107,17 +107,17 @@ namespace SpellBind
                     break;
             }
             GameObject _enemyObj = _enemyObjPooler.GetPooledObject();
-            _enemyObj.transform.position = _spawnPos;
+            _enemyObj.transform.position = enemySpawnLocation[Random.Range(0, enemySpawnLocation.Count)].position;
 
             //Search for the available attack location and assign it to the spawned enemy
             Enemies _enemy = _enemyObj.GetComponent<Enemies>();
             int _randomIndex = Random.Range(0, enemyAttackLocation.Count);
             Transform _attackLoc = enemyAttackLocation[_randomIndex];
-            bool _iLocTaken = spawnedEnemies.Exists(e => e.attackLocation == _attackLoc);
-            while (_iLocTaken)
+            bool _isLocTaken = spawnedEnemies.Exists(e => e.attackLocation == _attackLoc);
+            while (_isLocTaken)
             {
                 _attackLoc = enemyAttackLocation[Random.Range(0, enemyAttackLocation.Count)];
-                _iLocTaken = spawnedEnemies.Exists(e => e.attackLocation == _attackLoc);
+                _isLocTaken = spawnedEnemies.Exists(e => e.attackLocation == _attackLoc);
             }
             _enemy.attackLocation = _attackLoc;
             _enemyObj.SetActive(true);

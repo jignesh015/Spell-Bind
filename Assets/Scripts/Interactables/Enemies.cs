@@ -49,6 +49,7 @@ namespace SpellBind
         [SerializeField] private GameObject captureSphere;
 
         [Header("SFX REFERENCES")]
+        [SerializeField] private AudioClip spawnSFX;
         [SerializeField] private AudioClip explosionSFX;
         [SerializeField] private AudioClip sparkSFX;
         [SerializeField] private AudioClip incorrectCommandSFX;
@@ -126,6 +127,9 @@ namespace SpellBind
             //Enable all enemy meshes and UI
             foreach (MeshRenderer _rend in enemyMeshes) _rend.enabled = true;
             healthBar.gameObject.SetActive(true);
+
+            //Play Spawn SFX
+            PlaySFX(spawnSFX);
         }
 
         // Update is called once per frame
@@ -137,6 +141,9 @@ namespace SpellBind
                 case EnemyState.Spawned:
                     //Look at the player
                     transform.LookAt(gameManager.playerController.GetPlayerPos());
+
+                    //Turn of collider until reaching the attack pos
+                    capsuleCollider.enabled = false;
 
                     //Check if attack location is set or not
                     if (attackLocation == null) return;
@@ -151,6 +158,7 @@ namespace SpellBind
                     else
                     {
                         enemyState = EnemyState.Attacking;
+                        capsuleCollider.enabled = true;
                     }
                     break;
                 case EnemyState.Attacking:
