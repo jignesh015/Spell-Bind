@@ -15,5 +15,10 @@ namespace SpellBind
         [Header("SPELL BOMBS")]
         public ObjectPooler spellBombSingleShotObjPool;
         public ObjectPooler spellBombMultiShotObjPool;
+
+        [Header("ENEMIES")]
+        public ObjectPooler attackerEnemyObjPool;
+        public ObjectPooler dodgerEnemyObjPool;
+        public ObjectPooler buffedEnemyObjPool;
     }
 }

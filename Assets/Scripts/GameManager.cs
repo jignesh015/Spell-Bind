@@ -14,6 +14,10 @@ namespace SpellBind
         [Header("SPELL BOMB SPAWN LOC")]
         [SerializeField] private List<Transform> spellBombSpawnLocation;
 
+        [Header("ENEMY SPAWN REFERENCES")]
+        [SerializeField] private List<Transform> enemySpawnLocation;
+        [SerializeField] private List<Transform> enemyAttackLocation;
+
         [Header("LAYER REFERENCES")]
         [SerializeField] private LayerMask playerLayer;
         [SerializeField] private LayerMask enemyLayer;
@@ -67,6 +71,8 @@ namespace SpellBind
         {
             //TODO: Create level serialized class
 
+            SpawnEnemy(EnemyType.Attacker, enemySpawnLocation[Random.Range(0, enemySpawnLocation.Count)].position);
+
             SpawnBomb(SpellBombType.SingleShot,
                 spellBombSpawnLocation[Random.Range(0, spellBombSpawnLocation.Count)].position);
         }
@@ -75,8 +81,26 @@ namespace SpellBind
         /// This function will spawn an enemy at the given location
         /// </summary>
         /// <param name="_spawnPos"></param>
-        public void SpawnEnemy(Vector3 _spawnPos)
+        public Enemies SpawnEnemy(EnemyType _enemyType, Vector3 _spawnPos)
         {
+            ObjectPooler _enemyObjPooler = objectPooler.attackerEnemyObjPool;
+            switch(_enemyType)
+            {
+                case EnemyType.Attacker:
+                    break;
+                case EnemyType.Dodger:
+                    _enemyObjPooler = objectPooler.dodgerEnemyObjPool;
+                    break;
+                case EnemyType.Buffed:
+                    _enemyObjPooler = objectPooler.buffedEnemyObjPool;
+                    break;
+            }
+            GameObject _enemyObj = _enemyObjPooler.GetPooledObject();
+            _enemyObj.transform.position = _spawnPos;
+            _enemyObj.SetActive(true);
+            Enemies _enemy = _enemyObj.GetComponent<Enemies>();
+            _enemy.SetAttackPosition(enemyAttackLocation[Random.Range(0, enemyAttackLocation.Count)].position);
+            return _enemy;
 
         }
 

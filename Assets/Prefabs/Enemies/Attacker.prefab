@@ -190,6 +190,7 @@ MonoBehaviour:
   enemyState: 0
   maxHealth: 50
   currentHealth: 0
+  attackPosSpeed: 2
   minAttackPeriod: 3
   maxAttackPeriod: 6
   attackEmissionIntensity: 1.5

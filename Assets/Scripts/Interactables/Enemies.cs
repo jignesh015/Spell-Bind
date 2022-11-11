@@ -17,6 +17,7 @@ namespace SpellBind
         [SerializeField] private float currentHealth;
 
         [Header("ATTACK THRESHOLDS")]
+        [SerializeField] private float attackPosSpeed = 2f;
         [SerializeField] private float minAttackPeriod = 3;
         [SerializeField] private float maxAttackPeriod = 6;
         [SerializeField] private float attackEmissionIntensity = 1.5f;
@@ -57,6 +58,7 @@ namespace SpellBind
         private Slider healthBar;
 
         //Attack Variables
+        private Vector3 attackPosition;
         private float timeSinceLastAttack;
         private float nextAttackDelay;
         private bool isPreparedForAttack;
@@ -124,6 +126,26 @@ namespace SpellBind
             healthBar.value = Mathf.Lerp(healthBar.value, currentHealth/maxHealth, Time.deltaTime);
             switch(enemyState)
             {
+                case EnemyState.Spawned:
+                    //Look at the player
+                    transform.LookAt(gameManager.playerController.GetPlayerPos());
+
+                    //Check if attack position is set or not
+                    if (attackPosition == null || attackPosition == Vector3.zero) return;
+
+                    //Get to the attack position
+                    float _dist = Mathf.Abs(Vector3.Distance(transform.position, attackPosition));
+                    if (_dist > 0.5f)
+                    {
+                        transform.position = Vector3.Lerp(transform.position, attackPosition, 
+                            Time.deltaTime * attackPosSpeed);
+                    }
+                    else
+                    {
+                        //transform.position = attackPosition;
+                        enemyState = EnemyState.Attacking;
+                    }
+                    break;
                 case EnemyState.Attacking:
                     //Look at the player
                     transform.LookAt(gameManager.playerController.GetPlayerPos());
@@ -168,6 +190,11 @@ namespace SpellBind
         {
             //Reset Outline
             outline.enabled = false;
+        }
+
+        public void SetAttackPosition(Vector3 _position)
+        {
+            attackPosition = _position;
         }
 
         /// <summary>

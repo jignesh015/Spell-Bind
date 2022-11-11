@@ -18,6 +18,7 @@ namespace SpellBind
 
     public enum EnemyState
     {
+        Spawned,
         Attacking,
         Dodging,
         Captured,

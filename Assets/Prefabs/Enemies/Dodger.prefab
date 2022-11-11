@@ -72,6 +72,11 @@ PrefabInstance:
       propertyPath: dodgeProbability
       value: 0.95
       objectReference: {fileID: 0}
+    - target: {fileID: 75501731001396915, guid: d4f31dcbd7899a64b985c22d1b5c42f5,
+        type: 3}
+      propertyPath: timeToReachAttachPos
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 470209521424642269, guid: d4f31dcbd7899a64b985c22d1b5c42f5,
         type: 3}
       propertyPath: m_LocalPosition.z
