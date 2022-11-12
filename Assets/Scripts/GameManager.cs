@@ -113,7 +113,7 @@ namespace SpellBind
         /// This function will spawn a spell bomb at the given location
         /// </summary>
         /// <param name="_spawnPos"></param>
-        public SpellBombs SpawnBomb(SpellBombType _spellBombType, Vector3 _spawnPos)
+        public SpellBombs SpawnBomb(SpellBombType _spellBombType)
         {
             //Get the bomb from the pool
             ObjectPooler _spellBombPooler = objectPooler.spellBombSingleShotObjPool;
@@ -127,9 +127,15 @@ namespace SpellBind
                     break;
             }
             GameObject _bombObj = _spellBombPooler.GetPooledObject();
-            _bombObj.transform.position = _spawnPos;
+            SpellBombs _bomb = _bombObj.GetComponent<SpellBombs>();
+            _bomb.spawnPoint = spellBombSpawnLocation[Random.Range(0, spellBombSpawnLocation.Count)].position;
+            _bombObj.transform.position = _bomb.spawnPoint;
             _bombObj.SetActive(true);
-            return _bombObj.GetComponent<SpellBombs>();
+
+            //Add the bomb to spawned bomb list
+            spawnedSpellBombs.Add(_bomb);
+
+            return _bomb;
         }
 
         /// <summary>
@@ -179,10 +185,27 @@ namespace SpellBind
             return _enemies;
         }
 
+        /// <summary>
+        /// Removes the given enemy from the spawned list
+        /// This is generally done when the enemy dies
+        /// </summary>
+        /// <param name="_enemyToRemove"></param>
         public void RemoveEnemyFromSpawnList(Enemies _enemyToRemove)
         {
             if (spawnedEnemies.Count > 0 && spawnedEnemies.Contains(_enemyToRemove))
                 spawnedEnemies.Remove(_enemyToRemove);
+        }
+
+        /// <summary>
+        /// Removes the given bomb from the spawned list
+        /// This is generally done when the bomb is exploded
+        /// </summary>
+        /// <param name="_bomb"></param>
+        public void RemoveSpellBombFromSpawnList(SpellBombs _bomb)
+        {
+            if(spawnedSpellBombs.Count > 0 && spawnedSpellBombs.Contains(_bomb))
+                spawnedSpellBombs.Remove(_bomb);
+            levelController.onSpellBombExplode.Invoke();
         }
     }
 }

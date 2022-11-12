@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace SpellBind
@@ -11,17 +13,33 @@ namespace SpellBind
 
         //Level Creation variables
         private Level currentLevel;
+
+        //Enemy Spawn variables
         private List<EnemyType> enemiesToSpawn;
         private float lastEnemySpawnTime;
         private float nextEnemySpawnDelay;
         private int numOfEnemiesSpawned;
         private bool startSpawningEnemies;
 
+        //Spellbomb Spawn variables
+        private List<SpellBombType> spellBombTypes;
+        private SpellBombType nextSpellBombToSpawn;
+        private float lastSpellBombExplodeTime;
+        private float nextSpellBombSpawnDelay;
+        private bool startSpawningSpellBombs;
+
         private GameManager gameManager;
+        public Action onSpellBombExplode;
 
         // Start is called before the first frame update
         void Start()
         {
+            onSpellBombExplode += UpdateSpellBombExplodeTime;
+        }
+
+        private void OnDestroy()
+        {
+            onSpellBombExplode = null;
         }
 
         // Update is called once per frame
@@ -40,11 +58,16 @@ namespace SpellBind
             {
                 gameManager.SpawnEnemy(enemiesToSpawn[numOfEnemiesSpawned]);
                 lastEnemySpawnTime = Time.time;
-                nextEnemySpawnDelay = Random.Range(currentLevel.minEnemySpawnGap, currentLevel.maxEnemySpawnGap);
+                nextEnemySpawnDelay = UnityEngine.Random.Range(currentLevel.minEnemySpawnGap, currentLevel.maxEnemySpawnGap);
                 numOfEnemiesSpawned++;
             }
 
-            //TODO: Spawn spell bombs
+            if(startSpawningSpellBombs && gameManager.spawnedSpellBombs.Count == 0
+                && (Time.time - lastSpellBombExplodeTime) > nextSpellBombSpawnDelay)
+            {
+                gameManager.SpawnBomb(nextSpellBombToSpawn);
+                SetSpellBombToSpawn();
+            }
         }
 
         public void InitializeLevel(int _levelNo)
@@ -52,7 +75,7 @@ namespace SpellBind
             gameManager = GameManager.Instance;
             currentLevel = levels[_levelNo - 1];
 
-            //Reset variables
+            //Set enemy spawn variables
             numOfEnemiesSpawned = 0;
             lastEnemySpawnTime = Time.time;
             nextEnemySpawnDelay = currentLevel.minEnemySpawnGap / 2f;
@@ -60,7 +83,12 @@ namespace SpellBind
             //Generate a list in random order of all the enemies to spawn
             EnemiesToSpawn();
 
+            //Set spellbomb spawn variables
+            lastSpellBombExplodeTime = Time.time;
+            SetSpellBombToSpawn();
+
             startSpawningEnemies = true;
+            startSpawningSpellBombs = currentLevel.spellBombTypes.Count > 0;
         }
 
         public Level GetCurrentLevel() 
@@ -79,7 +107,21 @@ namespace SpellBind
                 }
             }
             //Randomize the list order
-            enemiesToSpawn = enemiesToSpawn.OrderBy(e => Random.value).ToList();
+            enemiesToSpawn = enemiesToSpawn.OrderBy(e => UnityEngine.Random.value).ToList();
+        }
+
+        private void SetSpellBombToSpawn()
+        {
+            if (currentLevel.spellBombTypes.Count == 0) return;
+            nextSpellBombToSpawn = currentLevel.spellBombTypes[UnityEngine.Random.Range(0,
+                currentLevel.spellBombTypes.Count)].spellBombType;
+            nextSpellBombSpawnDelay = currentLevel.spellBombTypes.Find(s =>
+                s.spellBombType.Equals(nextSpellBombToSpawn)).spawnRate;
+        }
+
+        public void UpdateSpellBombExplodeTime()
+        {
+            lastSpellBombExplodeTime= Time.time;
         }
     }
 }

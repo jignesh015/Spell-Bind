@@ -18,14 +18,18 @@ namespace SpellBind
         [SerializeField] private float flyOffset = 0.5f;
         [SerializeField] private float flyTime = 0.5f;
         [SerializeField] private float throwSpeed;
+        [SerializeField] private float bombBackToSpawnSpeed;
 
         private bool makeItFly, dropIt;
         [HideInInspector]public Transform isThrownTowards;
 
+        [HideInInspector] public Vector3 spawnPoint;
+        private GameManager gameManager;
+
         // Start is called before the first frame update
         void Start()
         {
-        
+            gameManager = GameManager.Instance;
         }
 
         private void OnEnable()
@@ -33,9 +37,15 @@ namespace SpellBind
             Initialize();
         }
 
+        private void OnDisable()
+        {
+            if(gameManager) gameManager.RemoveSpellBombFromSpawnList(this);
+        }
+
         public override void Initialize()
         {
             base.Initialize();
+            rigidBody.velocity = Vector3.zero;
             spellBombState = SpellBombState.Idle;
             interactableType = InteractableType.SpellBomb;
         }
@@ -66,10 +76,17 @@ namespace SpellBind
 
             if (dropIt)
             {
-                //TODO: Animate it back to origin
-                rigidBody.velocity = Vector3.zero;
-                rigidBody.useGravity = true;
-                dropIt = false;
+                //TODO: Lerp it back to spawn point
+                if(Vector3.Distance(transform.position, spawnPoint) > 0.01f)
+                {
+                    transform.position = Vector3.Lerp(transform.position, spawnPoint, 
+                        Time.deltaTime * bombBackToSpawnSpeed);
+                }
+                else
+                {
+                    dropIt = false;
+                    spellBombState = SpellBombState.Idle;
+                }
             }
         }
 
@@ -148,11 +165,11 @@ namespace SpellBind
             switch(spellBombType)
             {
                 case SpellBombType.SingleShot:
-                    isThrownTowards = GameManager.Instance.GetClosestEnemy(transform.position);
+                    isThrownTowards = gameManager.GetClosestEnemy(transform.position);
                     break;
                 case SpellBombType.MultiShot:
                     //Get multiple enemies
-                    List<Transform> _allEnemies = GameManager.Instance.GetAllEnemies();
+                    List<Transform> _allEnemies = gameManager.GetAllEnemies();
                     isThrownTowards = _allEnemies[0];
                     int _bombCount = 1;
                     for(int i = 1; i < _allEnemies.Count; i++)
@@ -160,7 +177,8 @@ namespace SpellBind
                         if(_bombCount < shotCount)
                         {
                             //Spawn a bomb, assign an enemy and change its state to thrown
-                            SpellBombs _spellBomb = GameManager.Instance.SpawnBomb(spellBombType, transform.position);
+                            SpellBombs _spellBomb = gameManager.SpawnBomb(spellBombType);
+                            _spellBomb.transform.position = transform.position;
                             _spellBomb.isThrownTowards = _allEnemies[i];
                             _spellBomb.spellBombState = SpellBombState.Thrown;
                             _bombCount++;

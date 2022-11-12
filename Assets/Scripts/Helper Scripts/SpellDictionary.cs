@@ -34,7 +34,8 @@ namespace SpellBind
             "capture","raptor","caricature","catch", "rapture","wrapper",
             "rapper","captcha", "snapchat", "snapper", "snatch", "snatcher",
             "captured", "chair", "cat", "cap", "cancel", "cancer", "cochair",
-            "cater", "caretaker", "sketch", "sketcher", "stretcher"
+            "cater", "caretaker", "sketch", "sketcher", "stretcher", "chuck",
+            "chuckle", "church", "clutch", "teacher", "catcher"
         };
         public static List<string> smashSpellDictionary = new List<string>()
         {
