@@ -79,6 +79,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 75501731001396915, guid: d4f31dcbd7899a64b985c22d1b5c42f5,
         type: 3}
+      propertyPath: preparingToAttackSFX
+      value: 
+      objectReference: {fileID: 8300000, guid: 34ae13f22a9caa846b3e50813dd2e5e1, type: 3}
+    - target: {fileID: 75501731001396915, guid: d4f31dcbd7899a64b985c22d1b5c42f5,
+        type: 3}
       propertyPath: timeToReachAttachPos
       value: 5
       objectReference: {fileID: 0}

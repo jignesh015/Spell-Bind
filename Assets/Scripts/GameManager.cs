@@ -68,26 +68,6 @@ namespace SpellBind
         }
 
         /// <summary>
-        /// This function will initialize the given level
-        /// </summary>
-        /// <param name="_levelNo"></param>
-        /// <returns></returns>
-        public IEnumerator InitiateLevel(int _levelNo)
-        {
-            //TODO: Create level serialized class
-
-            yield return new WaitForSeconds(0.5f);
-            //SpawnEnemy(EnemyType.Attacker, enemySpawnLocation[Random.Range(0, enemySpawnLocation.Count)].position);
-            //yield return new WaitForSeconds(3f);
-            //SpawnEnemy(EnemyType.Buffed, enemySpawnLocation[Random.Range(0, enemySpawnLocation.Count)].position);
-            //yield return new WaitForSeconds(5f);
-            //SpawnEnemy(EnemyType.Dodger, );
-
-            //SpawnBomb(SpellBombType.SingleShot,
-            //    spellBombSpawnLocation[Random.Range(0, spellBombSpawnLocation.Count)].position);
-        }
-
-        /// <summary>
         /// This function will spawn an enemy at the given location
         /// </summary>
         /// <param name="_spawnPos"></param>
@@ -111,8 +91,7 @@ namespace SpellBind
 
             //Search for the available attack location and assign it to the spawned enemy
             Enemies _enemy = _enemyObj.GetComponent<Enemies>();
-            int _randomIndex = Random.Range(0, enemyAttackLocation.Count);
-            Transform _attackLoc = enemyAttackLocation[_randomIndex];
+            Transform _attackLoc = enemyAttackLocation[Random.Range(0, enemyAttackLocation.Count)];
             bool _isLocTaken = spawnedEnemies.Exists(e => e.attackLocation == _attackLoc);
             while (_isLocTaken)
             {
@@ -124,6 +103,7 @@ namespace SpellBind
 
             //Add the enemy to the spawnedEnemyies list
             spawnedEnemies.Add(_enemy);
+            Debug.LogFormat("<color=olive>Enemy {0} spawned</color>", _enemyObj.name);
 
             //Return the enemy obj
             return _enemy;

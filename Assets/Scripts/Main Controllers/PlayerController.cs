@@ -27,6 +27,8 @@ namespace SpellBind
         public float maxDefenseDuration = 3f;
         [SerializeField] private Slider defenseTimerSlider;
         [SerializeField] private GameObject defenseForceField;
+        [SerializeField] private AudioClip forceFieldOnSFX;
+        [SerializeField] private AudioClip forceFieldErrorSFX;
 
         [Header("PLAYER COLLIDER")]
         [SerializeField] private CapsuleCollider playerCollider;
@@ -54,11 +56,13 @@ namespace SpellBind
         private float defenseTimer;
 
         private GameManager gameManager;
+        private AudioSource playerAudioSource;
         #endregion
 
         private void Awake()
         {
             gameManager = GameManager.Instance;
+            playerAudioSource = GetComponent<AudioSource>();
 
             float _yOffset = playerColliderOffset;
             Vector3 _colliderPos = playerCollider.transform.position;
@@ -99,7 +103,7 @@ namespace SpellBind
                         if(defenseTimer < 0)
                         {
                             defenseTimer = 0;
-                            RemoveDefense();
+                            RemoveDefense(true);
                         }
                     }
                 }
@@ -150,19 +154,19 @@ namespace SpellBind
         {
             isDefenseModeOn = true;
 
-            //TODO: CREATE A DEFENSE FORCE FIELD AROUND THE PLAYER
             defenseForceField.SetActive(true);
+            PlaySFX(forceFieldOnSFX);
         }
 
         /// <summary>
         /// This function will remove the defensive force field
         /// </summary>
-        public void RemoveDefense()
+        public void RemoveDefense(bool _ranOutOfTime = false)
         {
             isDefenseModeOn = false;
 
-            //TODO: REMOVE THE DEFENSE FORCE FIELD AROUND THE PLAYER
             defenseForceField.SetActive(false);
+            PlaySFX(_ranOutOfTime ? forceFieldErrorSFX : forceFieldOnSFX);
         }
 
         /// <summary>
@@ -223,6 +227,13 @@ namespace SpellBind
         public Vector3 GetPlayerPos()
         {
             return playerCollider.transform.position; 
+        }
+
+        public void PlaySFX(AudioClip _clip)
+        {
+            playerAudioSource.Stop();
+            playerAudioSource.clip = _clip;
+            playerAudioSource.Play();
         }
 
         /// <summary>

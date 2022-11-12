@@ -50,9 +50,10 @@ namespace SpellBind
 
         [Header("SFX REFERENCES")]
         [SerializeField] private AudioClip spawnSFX;
-        [SerializeField] private AudioClip explosionSFX;
         [SerializeField] private AudioClip sparkSFX;
+        [SerializeField] private AudioClip explosionSFX;
         [SerializeField] private AudioClip incorrectCommandSFX;
+        [SerializeField] private AudioClip preparingToAttackSFX;
 
         private GameManager gameManager;
         private AudioSource enemyAudioSource;
@@ -124,9 +125,17 @@ namespace SpellBind
             capsuleCollider = GetComponentInChildren<CapsuleCollider>();
             capsuleCollider.enabled = true;
 
-            //Enable all enemy meshes and UI
+            //Reset rigid body
+            rigidBody.velocity = Vector3.zero;
+            rigidBody.isKinematic = true;
+
+            //Set enemy state to spawned
+            enemyState = EnemyState.Spawned;
+
+            //Enable all enemy meshes and reset UI
             foreach (MeshRenderer _rend in enemyMeshes) _rend.enabled = true;
             healthBar.gameObject.SetActive(true);
+            healthBar.value = 1;
 
             //Play Spawn SFX
             PlaySFX(spawnSFX);
@@ -219,6 +228,7 @@ namespace SpellBind
             {
                 isPreparedForAttack = true;
                 PlayAnimation(animTriggers[1]);
+                PlaySFX(preparingToAttackSFX);
             }
         }
 

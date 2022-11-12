@@ -155,6 +155,10 @@ namespace SpellBind
                     }
                 }
             }
+            else
+            {
+                wandRaycastRenderer.enabled = false;
+            }
 
             Debug.DrawRay(wandRaycastPoint.position,
                    wandRaycastPoint.TransformDirection(Vector3.forward) * wandRaycastDistance, Color.green);

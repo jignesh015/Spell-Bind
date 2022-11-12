@@ -33,12 +33,14 @@ namespace SpellBind
         {
             "capture","raptor","caricature","catch", "rapture","wrapper",
             "rapper","captcha", "snapchat", "snapper", "snatch", "snatcher",
-            "captured", "chair", "cat"
+            "captured", "chair", "cat", "cap", "cancel", "cancer", "cochair",
+            "cater", "caretaker", "sketch", "sketcher", "stretcher"
         };
         public static List<string> smashSpellDictionary = new List<string>()
         {
             "smash", "dash", "smell", "smack", "snack", "snooze", "splash", "clash",
-            "smashed", "mash", "mesh", "mashed", "flash", "message", "massage", "snap"
+            "smashed", "mash", "mesh", "mashed", "flash", "message", "massage", "snap",
+            "sma", "flesh", "stretch", "stress", "slash"
         };
         public static List<string> attackSpellDictionary = new List<string>()
         {
@@ -52,7 +54,8 @@ namespace SpellBind
             "hectic", "heretic", "itake", "illtake", "anddad", "idad",
             "untack", "untick", "until", "uncle", "ankle", "attime",
             "hidan", "untapped", "ontime", "atime", "tech", "tank", "atank",
-            "hitank", "atech", "hited", "heighted"
+            "hitank", "atech", "hited", "heighted", "aday", "ata", "art",
+            "arta", "altar", "ofat", "offat", "ofa", "offa", "sofa", "mydad"
         };
     }
 }
