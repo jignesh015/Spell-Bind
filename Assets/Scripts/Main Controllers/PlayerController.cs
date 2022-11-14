@@ -175,7 +175,7 @@ namespace SpellBind
         /// <param name="_health"></param>
         public void Heal(int _health)
         {
-            maxPlayerHealth += _health;
+            currentPlayerHealth += _health;
         }
 
         /// <summary>
@@ -184,12 +184,12 @@ namespace SpellBind
         /// <param name="_damage"></param>
         public void OnPlayerAttacked(int _damage)
         {
-            maxPlayerHealth -= _damage;
+            currentPlayerHealth -= _damage;
             damageAnim.SetTrigger("Damage");
 
-            if (maxPlayerHealth < 0)
+            if (currentPlayerHealth < 0)
             {
-                maxPlayerHealth = 0;
+                currentPlayerHealth = 0;
 
                 //TODO: Game Over Logic
             }    
@@ -256,6 +256,14 @@ namespace SpellBind
         public void ToggleDefensiveGesture(bool _isOn)
         {
             isDefensiveGestureOn = _isOn;
+        }
+
+        /// <summary>
+        /// Resets the player variables
+        /// </summary>
+        public void ResetPlayer()
+        {
+            currentPlayerHealth = maxPlayerHealth;
         }
     }
 }

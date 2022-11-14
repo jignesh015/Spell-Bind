@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,17 +28,12 @@ namespace SpellBind
         private bool startSpawningSpellBombs;
 
         private GameManager gameManager;
-        public Action onSpellBombExplode;
 
         // Start is called before the first frame update
         void Start()
         {
-            onSpellBombExplode += UpdateSpellBombExplodeTime;
-        }
-
-        private void OnDestroy()
-        {
-            onSpellBombExplode = null;
+            gameManager = GameManager.Instance;
+            gameManager.onSpellBombExplode += UpdateSpellBombExplodeTime;
         }
 
         // Update is called once per frame
@@ -72,7 +66,7 @@ namespace SpellBind
 
         public void InitializeLevel(int _levelNo)
         {
-            gameManager = GameManager.Instance;
+            if(gameManager == null) gameManager = GameManager.Instance;
             currentLevel = levels[_levelNo - 1];
 
             //Set enemy spawn variables

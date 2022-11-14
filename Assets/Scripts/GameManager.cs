@@ -33,6 +33,11 @@ namespace SpellBind
         private static GameManager _instance;
         public static GameManager Instance { get { return _instance; } }
 
+        #region DELEGATES
+        public System.Action onEnemyKilled;
+        public System.Action onSpellBombExplode;
+        #endregion
+
         private void Awake()
         {
             if (_instance != null && _instance != this)
@@ -58,13 +63,23 @@ namespace SpellBind
         // Start is called before the first frame update
         void Start()
         {
-            levelController.InitializeLevel(1);
+            StartLevel(1);
         }
 
         // Update is called once per frame
         void Update()
         {
         
+        }
+
+        /// <summary>
+        /// Starts the specified level
+        /// </summary>
+        /// <param name="_level"></param>
+        public void StartLevel(int _level)
+        {
+            playerController.ResetPlayer();
+            levelController.InitializeLevel(1);
         }
 
         /// <summary>
@@ -194,6 +209,7 @@ namespace SpellBind
         {
             if (spawnedEnemies.Count > 0 && spawnedEnemies.Contains(_enemyToRemove))
                 spawnedEnemies.Remove(_enemyToRemove);
+            onEnemyKilled?.Invoke();
         }
 
         /// <summary>
@@ -205,7 +221,7 @@ namespace SpellBind
         {
             if(spawnedSpellBombs.Count > 0 && spawnedSpellBombs.Contains(_bomb))
                 spawnedSpellBombs.Remove(_bomb);
-            levelController.onSpellBombExplode.Invoke();
+            onSpellBombExplode?.Invoke();
         }
     }
 }
