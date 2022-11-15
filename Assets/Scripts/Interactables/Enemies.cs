@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEditor.EditorGUI;
 
 namespace SpellBind
 {
@@ -55,6 +56,12 @@ namespace SpellBind
         [SerializeField] private AudioClip incorrectCommandSFX;
         [SerializeField] private AudioClip preparingToAttackSFX;
 
+        //Boolean settings
+        [HideInInspector] public bool disableAttack;
+        [HideInInspector] public bool disableDodge;
+        [HideInInspector] public bool disableEscape;
+
+        //Required components
         private GameManager gameManager;
         private AudioSource enemyAudioSource;
         private CapsuleCollider capsuleCollider;
@@ -110,8 +117,7 @@ namespace SpellBind
 
         private void OnDisable()
         {
-            //Remove enemy from spawnedEnemies list
-            if(gameManager) gameManager.RemoveEnemyFromSpawnList(this);
+            
         }
 
         public override void Initialize()
@@ -174,6 +180,9 @@ namespace SpellBind
                     //Look at the player
                     transform.LookAt(gameManager.playerController.GetPlayerPos());
 
+                    //Do not attack if attack is disabled
+                    if (disableAttack) break;
+
                     //Attack player after set amount of time
                     timeSinceLastAttack += Time.deltaTime;
                     if (timeSinceLastAttack > nextAttackDelay - 1)
@@ -185,6 +194,9 @@ namespace SpellBind
                     //Dodge the incoming attack
                     break;
                 case EnemyState.Captured:
+                    //Do not escape if it is disabled
+                    if(disableEscape) break;
+
                     //Try to escape the captured state
                     timeSinceCaptured += Time.deltaTime;
                     if (timeSinceCaptured > captureDuration)
@@ -255,7 +267,7 @@ namespace SpellBind
         /// </summary>
         public void Dodge()
         {
-            if(UnityEngine.Random.value <= dodgeProbability)
+            if(UnityEngine.Random.value <= dodgeProbability && !disableDodge)
                 StartCoroutine(IsDodging());
         }
 
@@ -303,6 +315,8 @@ namespace SpellBind
         {
             StopHighlight();
 
+            gameManager.onEnemyAttacked?.Invoke();
+
             currentHealth -= _damage;
             timeSinceLastAttack = 0;
             if (currentHealth <= 0)
@@ -343,6 +357,8 @@ namespace SpellBind
 
                 //Play captured animation
                 PlayAnimation(animTriggers[5]);
+
+                gameManager.onEnemyCaptured?.Invoke();
             }
             else
             {
@@ -401,6 +417,7 @@ namespace SpellBind
         public void OnSpellBombed(int _damage)
         {
             enemyState = EnemyState.Spellbombed;
+            gameManager.onEnemySpellBombed?.Invoke();
 
             currentHealth -= _damage;
             timeSinceLastAttack = 0;
@@ -446,6 +463,9 @@ namespace SpellBind
             //Disable all colliders
             capsuleCollider.enabled = false;
 
+            //Remove enemy from spawnedEnemies list
+            gameManager.RemoveEnemyFromSpawnList(this);
+
             Invoke(nameof(DisableSelf), 5f);
         }
 
@@ -486,7 +506,6 @@ namespace SpellBind
 
         private void PlayAnimation(string _trigger)
         {
-            //Debug.LogFormat("<color=green>Current Anim: {0}</color>", enemyAnimator.GetCurrentAnimatorClipInfo(0)[0].clip);
             enemyAnimator.SetTrigger(_trigger);
         }
 
@@ -497,6 +516,29 @@ namespace SpellBind
         {
             gameObject.SetActive(false);
             if(explosionObj != null) explosionObj.SetActive(false);
+        }
+
+        /// <summary>
+        /// Adjusts the settings for the tutorial
+        /// </summary>
+        public void AdjustEnemySettingForTutorial()
+        {
+            switch(enemyType)
+            {
+                case EnemyType.Attacker:
+                    disableAttack = true;
+                    disableDodge= true;
+                    break;
+                case EnemyType.Dodger:
+                    disableAttack = true;
+                    disableEscape = true;
+                    dodgeProbability = 1f;
+                    break;
+                case EnemyType.Buffed:
+                    disableAttack = true;
+                    dodgeProbability = 1f;
+                    break;
+            }
         }
     }
 }

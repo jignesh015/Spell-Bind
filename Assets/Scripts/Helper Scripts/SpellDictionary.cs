@@ -58,7 +58,9 @@ namespace SpellBind
             "hidan", "untapped", "ontime", "atime", "tech", "tank", "atank",
             "hitank", "atech", "hited", "heighted", "aday", "ata", "art",
             "arta", "altar", "ofat", "offat", "ofa", "offa", "sofa", "mydad",
-            "mytime", "hiken"
+            "mytime", "hiken", "again", "hiking", "haiku", "attend", "attain",
+            "obtain", "icant", "idont", "ican", "acan", "affair", "afair",
+            "ahair", "achair", "ahead"
         };
     }
 }

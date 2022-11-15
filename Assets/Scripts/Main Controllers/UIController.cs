@@ -27,7 +27,7 @@ namespace SpellBind
             gameManager= GameManager.Instance;
             player = gameManager.playerController;
 
-            DisplayUIMessage("Lorem Ipsum is simply dummy text of the printing and typesetting industry.", 7);
+            //DisplayUIMessage("Lorem Ipsum is simply dummy text of the printing and typesetting industry.", 7);
         }
 
         // Update is called once per frame
@@ -45,12 +45,10 @@ namespace SpellBind
         /// <param name="_displayTime"></param>
         public void DisplayUIMessage(string _message, float _displayTime)
         {
-            if(string.IsNullOrEmpty(_message))
-            {
-                StopCoroutine(nameof(DisplayUIMessageAsync));
-                StopUISFX();
-            }
-            else
+            //Stop the previous message coroutine and SFX
+            StopCoroutine(nameof(DisplayUIMessageAsync));
+            StopUISFX();
+            if (!string.IsNullOrEmpty(_message))
             {
                 StartCoroutine(DisplayUIMessageAsync(_message, _displayTime));
             }

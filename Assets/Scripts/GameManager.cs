@@ -28,12 +28,17 @@ namespace SpellBind
         [HideInInspector] public WandActionController wandActionController;
         [HideInInspector] public ObjectPoolController objectPooler;
         [HideInInspector] public LevelController levelController;
+        [HideInInspector] public UIController uiController;
+        [HideInInspector] public TutorialController tutorialController;
         #endregion
 
         private static GameManager _instance;
         public static GameManager Instance { get { return _instance; } }
 
         #region DELEGATES
+        public System.Action onEnemyAttacked;
+        public System.Action onEnemyCaptured;
+        public System.Action onEnemySpellBombed;
         public System.Action onEnemyKilled;
         public System.Action onSpellBombExplode;
         #endregion
@@ -54,6 +59,8 @@ namespace SpellBind
             wandActionController = FindObjectOfType<WandActionController>();
             objectPooler = FindObjectOfType<ObjectPoolController>();
             levelController = FindObjectOfType<LevelController>();
+            uiController = FindObjectOfType<UIController>();
+            tutorialController = FindObjectOfType<TutorialController>();
 
             //Initialize lists
             spawnedEnemies = new List<Enemies>();
@@ -63,7 +70,8 @@ namespace SpellBind
         // Start is called before the first frame update
         void Start()
         {
-            StartLevel(1);
+            StartTutorial();
+            //StartLevel(1);
         }
 
         // Update is called once per frame
@@ -83,10 +91,18 @@ namespace SpellBind
         }
 
         /// <summary>
+        /// Starts the game tutorial
+        /// </summary>
+        public void StartTutorial()
+        {
+            tutorialController.InitializeTutorial();
+        }
+
+        /// <summary>
         /// This function will spawn an enemy at the given location
         /// </summary>
         /// <param name="_spawnPos"></param>
-        public Enemies SpawnEnemy(EnemyType _enemyType)
+        public Enemies SpawnEnemy(EnemyType _enemyType, bool _forTutorial = false)
         {
             //Get enemy object of the given type from the pool and activate it
             ObjectPooler _enemyObjPooler = objectPooler.attackerEnemyObjPool;
@@ -106,7 +122,8 @@ namespace SpellBind
 
             //Search for the available attack location and assign it to the spawned enemy
             Enemies _enemy = _enemyObj.GetComponent<Enemies>();
-            Transform _attackLoc = enemyAttackLocation[Random.Range(0, enemyAttackLocation.Count)];
+            Transform _attackLoc = enemyAttackLocation[_forTutorial ? Random.Range(2, 4)
+                : Random.Range(0, enemyAttackLocation.Count)];
             bool _isLocTaken = spawnedEnemies.Exists(e => e.attackLocation == _attackLoc);
             while (_isLocTaken)
             {
@@ -119,6 +136,9 @@ namespace SpellBind
             //Add the enemy to the spawnedEnemyies list
             spawnedEnemies.Add(_enemy);
             Debug.LogFormat("<color=olive>Enemy {0} spawned</color>", _enemyObj.name);
+
+            //Ajust the enemy settings if spawned it for tutorial
+            if(_forTutorial) _enemy.AdjustEnemySettingForTutorial();
 
             //Return the enemy obj
             return _enemy;
