@@ -10,12 +10,12 @@ PrefabInstance:
     - target: {fileID: 282755115484441457, guid: 5aafa2cffd4cb9f4f9fe867075c30fa1,
         type: 3}
       propertyPath: maxDamage
-      value: 51
+      value: 71
       objectReference: {fileID: 0}
     - target: {fileID: 282755115484441457, guid: 5aafa2cffd4cb9f4f9fe867075c30fa1,
         type: 3}
       propertyPath: minDamage
-      value: 25
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 282755115484441457, guid: 5aafa2cffd4cb9f4f9fe867075c30fa1,
         type: 3}

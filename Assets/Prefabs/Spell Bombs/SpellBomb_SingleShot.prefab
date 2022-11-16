@@ -86,8 +86,8 @@ MonoBehaviour:
   outline: {fileID: 0}
   spellBombType: 0
   spellBombState: 0
-  minDamage: 25
-  maxDamage: 51
+  minDamage: 50
+  maxDamage: 71
   shotCount: 1
   flyOffset: 0.1
   flyTime: 0.5

@@ -135,6 +135,7 @@ namespace SpellBind
 
             //Change state to levitating
             spellBombState = SpellBombState.Levitated;
+            gameManager.onSpellBombFly?.Invoke();
         }
 
         public override void FollowWand(Vector3 _wandRaycastPos)
@@ -192,6 +193,7 @@ namespace SpellBind
 
             //Change state to thrown
             spellBombState = SpellBombState.Thrown;
+            gameManager.onSpellBombThrow?.Invoke();
         }
 
         /// <summary>

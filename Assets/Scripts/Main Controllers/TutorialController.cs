@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
+using Unity.VisualScripting.FullSerializer.Internal;
 using UnityEngine;
 
 namespace SpellBind
@@ -17,14 +18,19 @@ namespace SpellBind
         private bool isWaitingForWandPick;
         private bool isWaitingForFirstAttack;
         private bool completedFirstAttack;
-        private bool attackTutorialComplete;
 
         //Capture and Smash tutorial
         private bool isCaptured;
 
         //Fly and Throw tutorial
         private bool flyComplete;
+        private bool isWaitingToThrow;
+        private bool throwComplete;
+        private bool spawnSpellBomb;
 
+        //Defense tutorial
+        private bool isWaitingToDefend;
+        private bool defendComplete;
 
         private GameManager gameManager;
         private UIController uiController;
@@ -40,6 +46,9 @@ namespace SpellBind
             gameManager.onEnemyAttacked += OnFirstAttackComplete;
             gameManager.onEnemyCaptured += OnCaptured;
             gameManager.onEnemyKilled += OnEnemyKilled;
+            gameManager.onSpellBombFly += OnSpellBombFly;
+            gameManager.onSpellBombThrow += OnSpellBombThrow;
+            gameManager.onPlayerDefend += OnPlayerDefend;
         }
 
         // Update is called once per frame
@@ -90,6 +99,62 @@ namespace SpellBind
                 }
             }
             #endregion
+
+            #region FLY AND THROW
+            if(currentSpellTutorial == SpellTutorial.Fly)
+            {
+                if(spawnSpellBomb && gameManager.spawnedSpellBombs.Count == 0)
+                {
+                    gameManager.SpawnBomb(SpellBombType.SingleShot);
+                }
+
+                if(flyComplete)
+                {
+                    //Start throw tutorial
+                    StopAllCoroutines();
+                    StartCoroutine(FlyAndThrowTutorial(1));
+                }
+            }
+            if(currentSpellTutorial == SpellTutorial.Throw)
+            {
+                if (spawnSpellBomb && gameManager.spawnedSpellBombs.Count == 0)
+                {
+                    gameManager.SpawnBomb(SpellBombType.SingleShot);
+                }
+
+                if (isWaitingToThrow && throwComplete)
+                {
+                    isWaitingToThrow = false;
+                    StopAllCoroutines();
+                    StartCoroutine(FlyAndThrowTutorial(2));
+                }
+                if(enemyKilledCounter == 3)
+                {
+                    //Start Defense tutorial
+                    StopAllCoroutines();
+                    StartCoroutine(DefenseTutorial(0));
+                }
+            }
+            #endregion
+
+            #region DEFEND
+            if(currentSpellTutorial == SpellTutorial.Defend)
+            {
+                if(isWaitingToDefend && defendComplete)
+                {
+                    isWaitingToDefend = false;
+                    StopAllCoroutines();
+                    StartCoroutine(DefenseTutorial(1));
+                }
+
+                if(enemyKilledCounter == 5)
+                {
+                    //Tutorial finish
+                    StopAllCoroutines();
+                    StartCoroutine(DefenseTutorial(2));
+                }
+            }
+            #endregion
         }
 
         /// <summary>
@@ -97,16 +162,35 @@ namespace SpellBind
         /// </summary>
         public void InitializeTutorial()
         {
+            StartCoroutine(InitializeTutorialAsync());
+        }
+
+        private IEnumerator InitializeTutorialAsync()
+        {
+            while(gameManager == null)
+            {
+                yield return null;
+            }
+
             //Reset variables
             enemyKilledCounter = 0;
             isWaitingForWandPick = false;
             isWaitingForFirstAttack = false;
             completedFirstAttack = false;
             isCaptured = false;
+            flyComplete = false;
+            isWaitingToThrow = false;
+            throwComplete = false;
+            spawnSpellBomb = false;
+            isWaitingToDefend = false;
+            defendComplete = false;
+
             currentSpellTutorial = SpellTutorial.Attack;
+            gameManager.playerController.disableDefense = true;
 
             //Start attack tutorial
             StartCoroutine(AttackTutorial(0));
+
         }
 
         /// <summary>
@@ -140,7 +224,7 @@ namespace SpellBind
                     yield return StartCoroutine(DisplayUIMessage(UIMessageDictionary.tutorialOnWandPick, 2));
                     //Spawn an attacker for tutorial
                     gameManager.SpawnEnemy(EnemyType.Attacker, true);
-                    yield return new WaitForSeconds(messageDelay + 3);
+                    yield return new WaitForSeconds(messageDelay + 1f);
                     yield return StartCoroutine(DisplayUIMessage(UIMessageDictionary.tutorialOnWandPick, 3));
                     isWaitingForFirstAttack = true;
                     break;
@@ -205,10 +289,59 @@ namespace SpellBind
                     yield return new WaitForSeconds(messageDelay);
                     yield return StartCoroutine(DisplayUIMessage(UIMessageDictionary.tutorialFly, 2));
                     //Spawn and highlight a spell bomb
+                    spawnSpellBomb = true;
                     yield return new WaitForSeconds(messageDelay);
                     yield return StartCoroutine(DisplayUIMessage(UIMessageDictionary.tutorialFly, 3));
                     break;
                 case 1:
+                    //Throw Spell
+                    currentSpellTutorial = SpellTutorial.Throw;
+                    yield return StartCoroutine(DisplayUIMessage(UIMessageDictionary.tutorialThrow, 0));
+                    yield return new WaitForSeconds(messageDelay);
+                    yield return StartCoroutine(DisplayUIMessage(UIMessageDictionary.tutorialThrow, 1));
+                    isWaitingToThrow = true;
+                    break;
+                case 2:
+                    //On Spell bomb throw
+                    yield return StartCoroutine(DisplayUIMessage(UIMessageDictionary.tutorialThrow, 2));
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Starts the tutorial for Defense action
+        /// </summary>
+        /// <param name="_index"></param>
+        /// <returns></returns>
+        private IEnumerator DefenseTutorial(int _index)
+        {
+            currentSpellTutorial = SpellTutorial.Defend;
+            switch(_index)
+            {
+                case 0:
+                    //Defense intro
+                    yield return StartCoroutine(DisplayUIMessage(UIMessageDictionary.tutorialDefense, 0));
+                    yield return new WaitForSeconds(messageDelay);
+                    yield return StartCoroutine(DisplayUIMessage(UIMessageDictionary.tutorialDefense, 1));
+                    yield return new WaitForSeconds(messageDelay);
+                    yield return StartCoroutine(DisplayUIMessage(UIMessageDictionary.tutorialDefense, 2));
+                    isWaitingToDefend = true;
+                    gameManager.playerController.disableDefense = false;
+                    break;
+                case 1:
+                    //On successful defend
+                    yield return StartCoroutine(DisplayUIMessage(UIMessageDictionary.tutorialTextOutro, 0));
+                    yield return new WaitForSeconds(messageDelay);
+                    yield return StartCoroutine(DisplayUIMessage(UIMessageDictionary.tutorialTextOutro, 1));
+                    //Spawn an attacker and dodger
+                    gameManager.SpawnEnemy(EnemyType.Attacker);
+                    yield return new WaitForSeconds(messageDelay);
+                    gameManager.SpawnEnemy(EnemyType.Dodger);
+                    break;
+                case 2:
+                    //Tutorial Complete
+                    currentSpellTutorial = SpellTutorial.Done;
+                    yield return StartCoroutine(DisplayUIMessage(UIMessageDictionary.tutorialTextOutro, 2));
                     break;
             }
         }
@@ -231,6 +364,12 @@ namespace SpellBind
         private void OnEnemyKilled() { enemyKilledCounter++; }
 
         private void OnCaptured() { isCaptured = true; } 
+
+        private void OnSpellBombFly() { flyComplete = true; }
+
+        private void OnSpellBombThrow() { throwComplete = true; }
+
+        private void OnPlayerDefend() { defendComplete = true; }
     }
 
     public enum SpellTutorial
@@ -240,6 +379,8 @@ namespace SpellBind
         Smash,
         Fly,
         Throw,
-        Drop
+        Drop,
+        Defend,
+        Done
     }
 }

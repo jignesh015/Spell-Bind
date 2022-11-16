@@ -56,6 +56,20 @@ namespace SpellBind
             { "Now point towards the dementor and shout \n\"Throw\"", 2f },
             { "Let's do that again and destroy the dementor", 2f },
         };
+
+        public static Dictionary<string, float> tutorialDefense = new Dictionary<string, float>()
+        {
+            { "You did a splendid job!" , 2f },
+            { "Now let's learn how to defend yourself" , 3f },
+            { "Raise your palm in front of you to create a defensive shield" , 3f },
+        };
+
+        public static Dictionary<string, float> tutorialTextOutro = new Dictionary<string, float>()
+        {
+            { "Perfect!" , 1f },
+            { "Now destroy all the dementors while defending yourself", 2f },
+            { "Congrats Harry,\nyou're a wizard now!", 3f }
+        };
         #endregion
     }
 }

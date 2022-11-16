@@ -142,6 +142,11 @@ namespace SpellBind
             healthBar.gameObject.SetActive(true);
             healthBar.value = 1;
 
+            //Reset boolean settings
+            disableAttack = false;
+            disableDodge = false;
+            disableEscape = false;
+
             //Play Spawn SFX
             PlaySFX(spawnSFX);
         }

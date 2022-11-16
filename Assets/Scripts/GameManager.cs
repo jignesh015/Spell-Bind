@@ -40,7 +40,10 @@ namespace SpellBind
         public System.Action onEnemyCaptured;
         public System.Action onEnemySpellBombed;
         public System.Action onEnemyKilled;
+        public System.Action onSpellBombFly;
+        public System.Action onSpellBombThrow;
         public System.Action onSpellBombExplode;
+        public System.Action onPlayerDefend;
         #endregion
 
         private void Awake()

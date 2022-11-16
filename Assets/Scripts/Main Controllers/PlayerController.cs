@@ -29,6 +29,7 @@ namespace SpellBind
         [SerializeField] private GameObject defenseForceField;
         [SerializeField] private AudioClip forceFieldOnSFX;
         [SerializeField] private AudioClip forceFieldErrorSFX;
+        [HideInInspector] public bool disableDefense;
 
         [Header("PLAYER COLLIDER")]
         [SerializeField] private CapsuleCollider playerCollider;
@@ -91,7 +92,7 @@ namespace SpellBind
                 float _yDiff = playerHeadset.position.y - ovrSkeletonLeft.Bones[_startBoneId].Transform.position.y;
 
                 //Based on yDiff and left hand gesture, check for defense parameters
-                if (isDefensiveGestureOn && Mathf.Abs(_yDiff) < defenseGestureYThreshold)
+                if (isDefensiveGestureOn && Mathf.Abs(_yDiff) < defenseGestureYThreshold && !disableDefense)
                 {
                     //If defense timer is available, turn on defensive mode
                     if(defenseTimer > 0)
@@ -156,6 +157,7 @@ namespace SpellBind
 
             defenseForceField.SetActive(true);
             PlaySFX(forceFieldOnSFX);
+            gameManager.onPlayerDefend?.Invoke();
         }
 
         /// <summary>

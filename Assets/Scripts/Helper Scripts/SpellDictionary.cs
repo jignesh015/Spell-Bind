@@ -14,7 +14,7 @@ namespace SpellBind
             "spy", "tie", "fry", "pry", "plan", "plane", "snap", "buy", "pie", "try", "defy",
             "like", "bike", "mike", "spike", "reply", "goodbye", "polite", "police", "follow",
             "follower", "hey", "blank", "snipe", "say", "free", "faye", "spray", "day", "today",
-            "gay", "grey", "gray", "yeah", "frank"
+            "gay", "grey", "gray", "yeah", "frank", "flow", "faint", "fight", "fright"
         };
         public static List<string> dropSpellDictionary = new List<string>()
         {
@@ -27,7 +27,7 @@ namespace SpellBind
             "throw", "grow", "through", "thorough", "tough", "rough", "tree",
             "four", "sorrow", "two", "to", "too", "do", "sow", "bow", "device",
             "sew", "saw", "thaw", "they", "the", "dough", "true", "bro", "borrow",
-            "borough", "threw", "girl", "book", "go", "goo"
+            "borough", "threw", "girl", "book", "go", "goo", "grown", "group", "glow"
         };
         public static List<string> captureSpellDictionary = new List<string>()
         {
@@ -60,7 +60,7 @@ namespace SpellBind
             "arta", "altar", "ofat", "offat", "ofa", "offa", "sofa", "mydad",
             "mytime", "hiken", "again", "hiking", "haiku", "attend", "attain",
             "obtain", "icant", "idont", "ican", "acan", "affair", "afair",
-            "ahair", "achair", "ahead"
+            "ahair", "achair", "ahead", "imdone"
         };
     }
 }
