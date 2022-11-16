@@ -13,6 +13,7 @@ namespace SpellBind
         [Header("UI REFERENCES")]
         [SerializeField] private TextMeshProUGUI headerText;
         [SerializeField] private Image playerHealthBar;
+        [SerializeField] private GameObject spellBombArrowAlert;
 
         [Header("SFX REFERENCES")]
         [SerializeField] private AudioSource uiAudioSource;
@@ -69,6 +70,14 @@ namespace SpellBind
             }
             headerText.text = _message;
             StopUISFX();
+        }
+
+        /// <summary>
+        /// Toggles the Arrow UI to alert player of the spawned spell bomb
+        /// </summary>
+        public void ToggleSpellBombArrowAlert(bool _toggleOn)
+        {
+            spellBombArrowAlert.SetActive(_toggleOn);
         }
 
         private void PlayUISFX(AudioClip _clip, float _volume = 0.4f)

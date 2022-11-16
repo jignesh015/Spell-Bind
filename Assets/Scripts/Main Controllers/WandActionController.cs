@@ -24,10 +24,16 @@ namespace SpellBind
         [Header("INTERACTABLES REFERENCES")]
         [SerializeField] private string[] interactableLayerNames;
 
+        [Header("HIGHLIGHT WAND REFERENCES")]
+        [SerializeField] private AudioSource wandAudioSource;
+        [SerializeField] private AudioClip alertNotification;
+        [SerializeField] private Animator wandAnimator;
+
         #region PRIVATE VARIABLES
         private RaycastHit wandRaycastHit;
         private int interactableLayerMask;
 
+        [Header("-----")]
         [SerializeField] private bool isControllingInteractable;
         [SerializeField] private InteractableController currentlySelectedInteractable;
         private float distanceToInteractable;
@@ -325,6 +331,54 @@ namespace SpellBind
         {
             currentlySelectedInteractable = null;
             isControllingInteractable = false;
+        }
+
+        /// <summary>
+        /// Toggles the wand highlight on and off
+        /// </summary>
+        /// <param name="_toggleOn"></param>
+        public void ToggleWandHighlight(bool _toggleOn)
+        {
+            if(_toggleOn)
+            {
+                PlaySFX(alertNotification, true);
+                wandAnimator.SetTrigger("Highlight");
+            }
+            else
+            {
+                StopSFX();
+                wandAnimator.SetTrigger("Idle");
+            }
+        }
+
+        /// <summary>
+        /// Toggles wand visibility on and off
+        /// </summary>
+        public void ToggleWandVisibility(bool _toggleOn)
+        {
+            wandTransform.gameObject.SetActive(_toggleOn);
+        }
+
+
+        /// <summary>
+        /// Plays the given clip
+        /// </summary>
+        /// <param name="_clip"></param>
+        /// <param name="_shouldLoop"></param>
+        private void PlaySFX(AudioClip _clip, bool _shouldLoop)
+        {
+            wandAudioSource.Stop();
+            wandAudioSource.clip = _clip;
+            wandAudioSource.loop = _shouldLoop;
+            wandAudioSource.Play();
+        }
+
+        /// <summary>
+        /// Stops the audio from playing
+        /// </summary>
+        private void StopSFX()
+        {
+            wandAudioSource.Stop();
         }
     }
 }

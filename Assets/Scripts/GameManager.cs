@@ -68,6 +68,9 @@ namespace SpellBind
             //Initialize lists
             spawnedEnemies = new List<Enemies>();
             spawnedSpellBombs = new List<SpellBombs>();
+
+            //Toggle wand off
+            wandActionController.ToggleWandVisibility(false);
         }
 
         // Start is called before the first frame update
@@ -151,7 +154,7 @@ namespace SpellBind
         /// This function will spawn a spell bomb at the given location
         /// </summary>
         /// <param name="_spawnPos"></param>
-        public SpellBombs SpawnBomb(SpellBombType _spellBombType)
+        public SpellBombs SpawnBomb(SpellBombType _spellBombType, bool _forTutorial = false)
         {
             //Get the bomb from the pool
             ObjectPooler _spellBombPooler = objectPooler.spellBombSingleShotObjPool;
@@ -169,6 +172,7 @@ namespace SpellBind
             _bomb.spawnPoint = spellBombSpawnLocation[Random.Range(0, spellBombSpawnLocation.Count)].position;
             _bombObj.transform.position = _bomb.spawnPoint;
             _bombObj.SetActive(true);
+            if (_forTutorial) _bomb.ToggleSpellBombAlert(true);
 
             //Add the bomb to spawned bomb list
             spawnedSpellBombs.Add(_bomb);

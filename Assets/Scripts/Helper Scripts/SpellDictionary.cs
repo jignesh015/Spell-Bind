@@ -14,7 +14,8 @@ namespace SpellBind
             "spy", "tie", "fry", "pry", "plan", "plane", "snap", "buy", "pie", "try", "defy",
             "like", "bike", "mike", "spike", "reply", "goodbye", "polite", "police", "follow",
             "follower", "hey", "blank", "snipe", "say", "free", "faye", "spray", "day", "today",
-            "gay", "grey", "gray", "yeah", "frank", "flow", "faint", "fight", "fright"
+            "gay", "grey", "gray", "yeah", "frank", "flow", "faint", "fight", "fright", "lie",
+            "july", "lay"
         };
         public static List<string> dropSpellDictionary = new List<string>()
         {

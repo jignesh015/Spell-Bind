@@ -34,6 +34,7 @@ namespace SpellBind
 
         private GameManager gameManager;
         private UIController uiController;
+        private WandActionController wandController;
 
         // Start is called before the first frame update
         void Start()
@@ -41,6 +42,7 @@ namespace SpellBind
             //Get script references
             gameManager = GameManager.Instance;
             uiController = gameManager.uiController;
+            wandController = gameManager.wandActionController;
 
             //Assign delegates
             gameManager.onEnemyAttacked += OnFirstAttackComplete;
@@ -105,7 +107,8 @@ namespace SpellBind
             {
                 if(spawnSpellBomb && gameManager.spawnedSpellBombs.Count == 0)
                 {
-                    gameManager.SpawnBomb(SpellBombType.SingleShot);
+                    gameManager.SpawnBomb(SpellBombType.SingleShot, true);
+                    uiController.ToggleSpellBombArrowAlert(true);
                 }
 
                 if(flyComplete)
@@ -119,7 +122,9 @@ namespace SpellBind
             {
                 if (spawnSpellBomb && gameManager.spawnedSpellBombs.Count == 0)
                 {
-                    gameManager.SpawnBomb(SpellBombType.SingleShot);
+                    gameManager.SpawnBomb(SpellBombType.SingleShot, true);
+                    uiController.ToggleSpellBombArrowAlert(true);
+                    spawnSpellBomb = false;
                 }
 
                 if (isWaitingToThrow && throwComplete)
@@ -213,10 +218,13 @@ namespace SpellBind
                     yield return new WaitForSeconds(messageDelay);
                     yield return StartCoroutine(DisplayUIMessage(UIMessageDictionary.tutorialTextIntro, 3));
                     isWaitingForWandPick = true;
-                    //TODO : Highlight wand
+                    //Show and Highlight wand
+                    wandController.ToggleWandVisibility(true);
+                    wandController.ToggleWandHighlight(true);
                     break;
                 case 1:
                     //On picking up wand
+                    wandController.ToggleWandHighlight(false);
                     yield return StartCoroutine(DisplayUIMessage(UIMessageDictionary.tutorialOnWandPick, 0));
                     yield return new WaitForSeconds(messageDelay);
                     yield return StartCoroutine(DisplayUIMessage(UIMessageDictionary.tutorialOnWandPick, 1));
@@ -263,8 +271,6 @@ namespace SpellBind
                     //On Captured
                     currentSpellTutorial = SpellTutorial.Smash;
                     yield return StartCoroutine(DisplayUIMessage(UIMessageDictionary.tutorialSmash, 0));
-                    yield return new WaitForSeconds(messageDelay);
-                    yield return StartCoroutine(DisplayUIMessage(UIMessageDictionary.tutorialSmash, 1));
                     break;
             }
         }
@@ -297,13 +303,11 @@ namespace SpellBind
                     //Throw Spell
                     currentSpellTutorial = SpellTutorial.Throw;
                     yield return StartCoroutine(DisplayUIMessage(UIMessageDictionary.tutorialThrow, 0));
-                    yield return new WaitForSeconds(messageDelay);
-                    yield return StartCoroutine(DisplayUIMessage(UIMessageDictionary.tutorialThrow, 1));
                     isWaitingToThrow = true;
                     break;
                 case 2:
                     //On Spell bomb throw
-                    yield return StartCoroutine(DisplayUIMessage(UIMessageDictionary.tutorialThrow, 2));
+                    yield return StartCoroutine(DisplayUIMessage(UIMessageDictionary.tutorialThrow, 1));
                     break;
             }
         }
@@ -365,7 +369,11 @@ namespace SpellBind
 
         private void OnCaptured() { isCaptured = true; } 
 
-        private void OnSpellBombFly() { flyComplete = true; }
+        private void OnSpellBombFly() 
+        { 
+            flyComplete = true;
+            uiController.ToggleSpellBombArrowAlert(false);
+        }
 
         private void OnSpellBombThrow() { throwComplete = true; }
 

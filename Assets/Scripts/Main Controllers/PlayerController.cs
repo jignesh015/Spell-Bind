@@ -24,7 +24,7 @@ namespace SpellBind
         [Header("DEFENSE SETTINGS")]
         public float defenseGestureYThreshold = 0.3f;
         public float minDefenseDuration = 0.5f;
-        public float maxDefenseDuration = 3f;
+        public float maxDefenseDuration = 5f;
         [SerializeField] private Slider defenseTimerSlider;
         [SerializeField] private GameObject defenseForceField;
         [SerializeField] private AudioClip forceFieldOnSFX;

@@ -17,14 +17,24 @@ namespace SpellBind
         [Header("THRESHOLDS")]
         [SerializeField] private float flyOffset = 0.5f;
         [SerializeField] private float flyTime = 0.5f;
+        [SerializeField] private float followWandSpeed;
         [SerializeField] private float throwSpeed;
         [SerializeField] private float bombBackToSpawnSpeed;
+
+        [Header("SFX REFERENCES")]
+        [SerializeField] private AudioClip alertNotification;
 
         private bool makeItFly, dropIt;
         [HideInInspector]public Transform isThrownTowards;
 
         [HideInInspector] public Vector3 spawnPoint;
         private GameManager gameManager;
+        private AudioSource audioSource;
+
+        private void Awake()
+        {
+            audioSource = GetComponent<AudioSource>();
+        }
 
         // Start is called before the first frame update
         void Start()
@@ -113,6 +123,9 @@ namespace SpellBind
 
         private IEnumerator LevitateAsync()
         {
+            //Turn of spell bomb alert notification if is on
+            ToggleSpellBombAlert(false);
+
             rigidBody.velocity = Vector3.zero;
             rigidBody.useGravity = false;
             makeItFly = true;
@@ -141,7 +154,8 @@ namespace SpellBind
         public override void FollowWand(Vector3 _wandRaycastPos)
         {
             if (spellBombState != SpellBombState.Levitated) return;
-            transform.position = Vector3.MoveTowards(transform.position, _wandRaycastPos, Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position, _wandRaycastPos, 
+                Time.deltaTime * followWandSpeed);
         }
 
         public override void Drop()
@@ -207,6 +221,18 @@ namespace SpellBind
             gameObject.SetActive(false);
         }
 
+        /// <summary>
+        /// Toggles the spell bomb alert notification on/off
+        /// </summary>
+        /// <param name="_turnOn"></param>
+        public void ToggleSpellBombAlert(bool _turnOn)
+        {
+            if (_turnOn)
+                PlaySFX(alertNotification, true);
+            else
+                StopSFX();
+        }
+
         private void OnCollisionEnter(Collision collision)
         {
             if(collision == null) return;
@@ -218,6 +244,19 @@ namespace SpellBind
                 Explode(_collidedEnemy);
             }
 
+        }
+
+        private void PlaySFX(AudioClip _clip, bool _shouldLoop)
+        {
+            audioSource.Stop();
+            audioSource.clip = _clip;
+            audioSource.loop = _shouldLoop;
+            audioSource.Play();
+        }
+
+        private void StopSFX()
+        {
+            audioSource.Stop();
         }
     }
 }

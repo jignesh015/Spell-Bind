@@ -12,7 +12,7 @@ namespace SpellBind
             { "Welcome!", 1f },
             { "This is a Defence Against the Dark Arts class", 3f },
             { "Let's begin our practice", 2f },
-            { "Start with picking up your wand", 2f },
+            { "Start with picking up your wand with your right hand", 2f },
         };
 
         public static Dictionary<string, float> tutorialOnWandPick = new Dictionary<string, float>()
@@ -32,13 +32,12 @@ namespace SpellBind
         public static Dictionary<string, float> tutorialCapture = new Dictionary<string, float>()
         {
             { "Well Done!" , 1f },
-            { "Now you'll encounter a new type of dementor", 2f },
+            { "Next, you'll encounter a new type of dementor", 2f },
             { "While the wand is pointed, shout \n\"Capture\"", 1.5f },
         };
 
         public static Dictionary<string, float> tutorialSmash = new Dictionary<string, float>()
         {
-            { "Good Work!" , 1f },
             { "Now shout \"Smash\" to smash the dementor against the ground", 2f },
         };
 
@@ -52,16 +51,15 @@ namespace SpellBind
 
         public static Dictionary<string, float> tutorialThrow = new Dictionary<string, float>()
         {
-            { "Awesome!" , 1f },
             { "Now point towards the dementor and shout \n\"Throw\"", 2f },
             { "Let's do that again and destroy the dementor", 2f },
         };
 
         public static Dictionary<string, float> tutorialDefense = new Dictionary<string, float>()
         {
-            { "You did a splendid job!" , 2f },
+            { "You did a splendid work!" , 2f },
             { "Now let's learn how to defend yourself" , 3f },
-            { "Raise your palm in front of you to create a defensive shield" , 3f },
+            { "Raise your other palm in front of you to create a defensive shield" , 3f },
         };
 
         public static Dictionary<string, float> tutorialTextOutro = new Dictionary<string, float>()
