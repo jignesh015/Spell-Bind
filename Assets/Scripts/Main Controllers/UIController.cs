@@ -14,6 +14,7 @@ namespace SpellBind
         [SerializeField] private TextMeshProUGUI headerText;
         [SerializeField] private Image playerHealthBar;
         [SerializeField] private GameObject spellBombArrowAlert;
+        [SerializeField] private GameObject spellBombMarker;
 
         [Header("SFX REFERENCES")]
         [SerializeField] private AudioSource uiAudioSource;
@@ -78,6 +79,7 @@ namespace SpellBind
         public void ToggleSpellBombArrowAlert(bool _toggleOn)
         {
             spellBombArrowAlert.SetActive(_toggleOn);
+            spellBombMarker.SetActive(_toggleOn);
         }
 
         private void PlayUISFX(AudioClip _clip, float _volume = 0.4f)

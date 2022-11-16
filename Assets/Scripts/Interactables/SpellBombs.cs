@@ -21,7 +21,7 @@ namespace SpellBind
         [SerializeField] private float throwSpeed;
         [SerializeField] private float bombBackToSpawnSpeed;
 
-        [Header("SFX REFERENCES")]
+        [Header("HIGHLIGHT REFERENCES")]
         [SerializeField] private AudioClip alertNotification;
 
         private bool makeItFly, dropIt;
@@ -130,6 +130,10 @@ namespace SpellBind
             rigidBody.useGravity = false;
             makeItFly = true;
 
+            //Change state to levitating
+            spellBombState = SpellBombState.Levitated;
+            gameManager.onSpellBombFly?.Invoke();
+
             Vector3 _startPos = transform.position;
             Vector3 _endPos = _startPos + Vector3.up * flyOffset;
             float _elapsedTime = 0;
@@ -146,9 +150,7 @@ namespace SpellBind
             yield return null;
             makeItFly = false;
 
-            //Change state to levitating
-            spellBombState = SpellBombState.Levitated;
-            gameManager.onSpellBombFly?.Invoke();
+            
         }
 
         public override void FollowWand(Vector3 _wandRaycastPos)
@@ -228,7 +230,9 @@ namespace SpellBind
         public void ToggleSpellBombAlert(bool _turnOn)
         {
             if (_turnOn)
+            {
                 PlaySFX(alertNotification, true);
+            }
             else
                 StopSFX();
         }

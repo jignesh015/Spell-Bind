@@ -43,7 +43,7 @@ namespace SpellBind
             "smash", "dash", "smell", "smack", "snack", "snooze", "splash", "clash",
             "smashed", "mash", "mesh", "mashed", "flash", "message", "massage", "snap",
             "sma", "flesh", "stretch", "stress", "slash", "smudge", "crash", "shed",
-            "nash"
+            "nash", "cash"
         };
         public static List<string> attackSpellDictionary = new List<string>()
         {
@@ -61,7 +61,7 @@ namespace SpellBind
             "arta", "altar", "ofat", "offat", "ofa", "offa", "sofa", "mydad",
             "mytime", "hiken", "again", "hiking", "haiku", "attend", "attain",
             "obtain", "icant", "idont", "ican", "acan", "affair", "afair",
-            "ahair", "achair", "ahead", "imdone"
+            "ahair", "achair", "ahead", "imdone", "adate", "added", "add"
         };
     }
 }
