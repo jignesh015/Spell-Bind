@@ -45,7 +45,7 @@ namespace SpellBind
         {
             { "You're doing a great job!" , 1.5f },
             { "Now you'll encounter a final type of dementor!" , 2f },
-            { "Here, make use of a spell bomb to destroy it" , 2f },
+            { "Make use of a spell bomb to destroy it" , 2f },
             { "Point your wand at the spell bomb and shout \n\"Fly\"", 2f },
         };
 

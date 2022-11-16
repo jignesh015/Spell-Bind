@@ -211,12 +211,9 @@ namespace SpellBind
                     //Tutorial Intro
                     yield return new WaitForSeconds(messageDelay);
                     yield return StartCoroutine(DisplayUIMessage(UIMessageDictionary.tutorialTextIntro, 0));
-                    yield return new WaitForSeconds(messageDelay);
                     yield return StartCoroutine(DisplayUIMessage(UIMessageDictionary.tutorialTextIntro, 1));
-                    yield return new WaitForSeconds(messageDelay);
                     yield return StartCoroutine(DisplayUIMessage(UIMessageDictionary.tutorialTextIntro, 2));
-                    yield return new WaitForSeconds(messageDelay);
-                    yield return StartCoroutine(DisplayUIMessage(UIMessageDictionary.tutorialTextIntro, 3));
+                    yield return StartCoroutine(DisplayUIMessage(UIMessageDictionary.tutorialTextIntro, 3, 0));
                     isWaitingForWandPick = true;
                     //Show and Highlight wand
                     wandController.ToggleWandVisibility(true);
@@ -226,21 +223,18 @@ namespace SpellBind
                     //On picking up wand
                     wandController.ToggleWandHighlight(false);
                     yield return StartCoroutine(DisplayUIMessage(UIMessageDictionary.tutorialOnWandPick, 0));
-                    yield return new WaitForSeconds(messageDelay);
                     yield return StartCoroutine(DisplayUIMessage(UIMessageDictionary.tutorialOnWandPick, 1));
-                    yield return new WaitForSeconds(messageDelay);
-                    yield return StartCoroutine(DisplayUIMessage(UIMessageDictionary.tutorialOnWandPick, 2));
+                    yield return StartCoroutine(DisplayUIMessage(UIMessageDictionary.tutorialOnWandPick, 2, 0));
                     //Spawn an attacker for tutorial
                     gameManager.SpawnEnemy(EnemyType.Attacker, true);
-                    yield return new WaitForSeconds(messageDelay + 1f);
-                    yield return StartCoroutine(DisplayUIMessage(UIMessageDictionary.tutorialOnWandPick, 3));
+                    yield return new WaitForSeconds(messageDelay * 1.2f);
+                    yield return StartCoroutine(DisplayUIMessage(UIMessageDictionary.tutorialOnWandPick, 3, 0));
                     isWaitingForFirstAttack = true;
                     break;
                 case 2:
                     //On first attack
                     yield return StartCoroutine(DisplayUIMessage(UIMessageDictionary.tutorialOnFirstAttack, 0));
-                    yield return new WaitForSeconds(messageDelay);
-                    yield return StartCoroutine(DisplayUIMessage(UIMessageDictionary.tutorialOnFirstAttack, 1));
+                    yield return StartCoroutine(DisplayUIMessage(UIMessageDictionary.tutorialOnFirstAttack, 1, 0));
                     break;
             }
         }
@@ -260,17 +254,16 @@ namespace SpellBind
                     isCaptured = false;
                     currentSpellTutorial = SpellTutorial.Capture;
                     yield return StartCoroutine(DisplayUIMessage(UIMessageDictionary.tutorialCapture, 0));
-                    yield return new WaitForSeconds(messageDelay);
-                    yield return StartCoroutine(DisplayUIMessage(UIMessageDictionary.tutorialCapture, 1));
+                    yield return StartCoroutine(DisplayUIMessage(UIMessageDictionary.tutorialCapture, 1, 0));
                     //Spawn a dodger for tutorial
                     gameManager.SpawnEnemy(EnemyType.Dodger, true);
                     yield return new WaitForSeconds(messageDelay);
-                    yield return StartCoroutine(DisplayUIMessage(UIMessageDictionary.tutorialCapture, 2));
+                    yield return StartCoroutine(DisplayUIMessage(UIMessageDictionary.tutorialCapture, 2, 0));
                     break;
                 case 1:
                     //On Captured
                     currentSpellTutorial = SpellTutorial.Smash;
-                    yield return StartCoroutine(DisplayUIMessage(UIMessageDictionary.tutorialSmash, 0));
+                    yield return StartCoroutine(DisplayUIMessage(UIMessageDictionary.tutorialSmash, 0, 0));
                     break;
             }
         }
@@ -288,26 +281,24 @@ namespace SpellBind
                     //Fly spell intro
                     currentSpellTutorial = SpellTutorial.Fly;
                     yield return StartCoroutine(DisplayUIMessage(UIMessageDictionary.tutorialFly, 0));
-                    yield return new WaitForSeconds(messageDelay);
-                    yield return StartCoroutine(DisplayUIMessage(UIMessageDictionary.tutorialFly, 1));
+                    yield return StartCoroutine(DisplayUIMessage(UIMessageDictionary.tutorialFly, 1, 0));
                     //Spawn a buffed enemy for tutorial
                     gameManager.SpawnEnemy(EnemyType.Buffed, true);
                     yield return new WaitForSeconds(messageDelay);
                     yield return StartCoroutine(DisplayUIMessage(UIMessageDictionary.tutorialFly, 2));
                     //Spawn and highlight a spell bomb
                     spawnSpellBomb = true;
-                    yield return new WaitForSeconds(messageDelay);
-                    yield return StartCoroutine(DisplayUIMessage(UIMessageDictionary.tutorialFly, 3));
+                    yield return StartCoroutine(DisplayUIMessage(UIMessageDictionary.tutorialFly, 3, 0));
                     break;
                 case 1:
                     //Throw Spell
                     currentSpellTutorial = SpellTutorial.Throw;
-                    yield return StartCoroutine(DisplayUIMessage(UIMessageDictionary.tutorialThrow, 0));
+                    yield return StartCoroutine(DisplayUIMessage(UIMessageDictionary.tutorialThrow, 0, 0));
                     isWaitingToThrow = true;
                     break;
                 case 2:
                     //On Spell bomb throw
-                    yield return StartCoroutine(DisplayUIMessage(UIMessageDictionary.tutorialThrow, 1));
+                    yield return StartCoroutine(DisplayUIMessage(UIMessageDictionary.tutorialThrow, 1, 0));
                     break;
             }
         }
@@ -325,18 +316,15 @@ namespace SpellBind
                 case 0:
                     //Defense intro
                     yield return StartCoroutine(DisplayUIMessage(UIMessageDictionary.tutorialDefense, 0));
-                    yield return new WaitForSeconds(messageDelay);
                     yield return StartCoroutine(DisplayUIMessage(UIMessageDictionary.tutorialDefense, 1));
-                    yield return new WaitForSeconds(messageDelay);
-                    yield return StartCoroutine(DisplayUIMessage(UIMessageDictionary.tutorialDefense, 2));
+                    yield return StartCoroutine(DisplayUIMessage(UIMessageDictionary.tutorialDefense, 2, 0));
                     isWaitingToDefend = true;
                     gameManager.playerController.disableDefense = false;
                     break;
                 case 1:
                     //On successful defend
                     yield return StartCoroutine(DisplayUIMessage(UIMessageDictionary.tutorialTextOutro, 0));
-                    yield return new WaitForSeconds(messageDelay);
-                    yield return StartCoroutine(DisplayUIMessage(UIMessageDictionary.tutorialTextOutro, 1));
+                    yield return StartCoroutine(DisplayUIMessage(UIMessageDictionary.tutorialTextOutro, 1, 0));
                     //Spawn an attacker and dodger
                     gameManager.SpawnEnemy(EnemyType.Attacker);
                     yield return new WaitForSeconds(messageDelay);
@@ -345,7 +333,7 @@ namespace SpellBind
                 case 2:
                     //Tutorial Complete
                     currentSpellTutorial = SpellTutorial.Done;
-                    yield return StartCoroutine(DisplayUIMessage(UIMessageDictionary.tutorialTextOutro, 2));
+                    yield return StartCoroutine(DisplayUIMessage(UIMessageDictionary.tutorialTextOutro, 2, 0));
                     break;
             }
         }
@@ -355,12 +343,14 @@ namespace SpellBind
         /// </summary>
         /// <param name="_textDict"></param>
         /// <param name="_index"></param>
-        private IEnumerator DisplayUIMessage(Dictionary<string, float> _textDict, int _index)
+        private IEnumerator DisplayUIMessage(Dictionary<string, float> _textDict, int _index, float _delayFactor = 1)
         {
             uiController.DisplayUIMessage(_textDict.ElementAt(_index).Key,
                 _textDict.ElementAt(_index).Value);
 
-            yield return new WaitForSeconds(_textDict.ElementAt(_index).Value);
+            yield return new WaitForSeconds(_textDict.ElementAt(_index).Value + 0.25f);
+
+            yield return new WaitForSeconds(messageDelay * _delayFactor);
         }
 
         private void OnFirstAttackComplete() { completedFirstAttack = true; }
