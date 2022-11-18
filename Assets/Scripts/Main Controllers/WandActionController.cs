@@ -227,7 +227,7 @@ namespace SpellBind
         {
             if(currentlySelectedInteractable != null)
             {
-                witActivation.Invoke("ActivateWit", 0.5f);
+                witActivation.Invoke("ActivateWit", 0.25f);
             }
         }
 

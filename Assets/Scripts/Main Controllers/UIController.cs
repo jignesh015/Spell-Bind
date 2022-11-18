@@ -20,6 +20,15 @@ namespace SpellBind
         [SerializeField] private Image playerHealthBar;
         [SerializeField] private GameObject spellBombArrowAlert;
         [SerializeField] private GameObject spellBombMarker;
+        [SerializeField] private GameObject micIndicator;
+
+        [Header("COMMAND TEXT REFERENCES")]
+        [SerializeField] private TextMeshProUGUI commandText;
+        [SerializeField] private float activeFontSize;
+        [SerializeField] private float inactiveFontSize;
+        [SerializeField] private Color validSpellTextColor;
+        [SerializeField] private Color invalidSpellTextColor;
+        [SerializeField] private Color inactiveSpellTextColor;
 
         [Header("SFX REFERENCES")]
         [SerializeField] private AudioSource uiAudioSource;
@@ -136,6 +145,26 @@ namespace SpellBind
         {
             uiPointerLineRenderer.enabled = _enable;
             uiPointerCursor.enabled= _enable;
+        }
+
+        /// <summary>
+        /// Toggles the mic indicator on/off
+        /// </summary>
+        public void ToggleMicIndicator(bool _enable)
+        {
+            micIndicator.SetActive(_enable);
+            commandText.color = inactiveSpellTextColor;
+            commandText.fontSize = inactiveFontSize;
+        }
+
+        /// <summary>
+        /// Sets the command text to the command given by the player
+        /// </summary>
+        public void SetCommandText(string _command, bool _isValidSpell)
+        {
+            commandText.text = _command;
+            commandText.color = _isValidSpell ? validSpellTextColor : invalidSpellTextColor;
+            commandText.fontSize = activeFontSize;
         }
     }
 }

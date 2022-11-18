@@ -79,12 +79,24 @@ namespace SpellBind
         }
 
         /// <summary>
+        /// Is called whenever the microphone is activated
+        /// </summary>
+        public void OnStartedListening()
+        {
+            Debug.Log("<color=green>STARTED LISTENING</color>");
+            GameManager.Instance.onMicStart?.Invoke();
+            GameManager.Instance.uiController.ToggleMicIndicator(true);
+        }
+
+        /// <summary>
         /// Is called whenever the microphone is deactivated
         /// </summary>
         public void OnStoppedListening()
         {
-            Debug.Log("STOPPED LISTENING");
+            Debug.Log("<color=red>STOPPED LISTENING</color>");
             wandActionController.ValidateWitActivation();
+            GameManager.Instance.onMicStop?.Invoke();
+            GameManager.Instance.uiController.ToggleMicIndicator(false);
         }
 
         private Spells ValidateSpell(string _command)
@@ -94,21 +106,24 @@ namespace SpellBind
 
             Debug.LogFormat("Command Lower : {0}", _command);
             spellDebugText.text = _command;
+            Spells _spell = Spells.None;
             
             if (SpellDictionary.flySpellDictionary.Contains(_command))
-                return Spells.Fly;
+                _spell = Spells.Fly;
             else if (SpellDictionary.dropSpellDictionary.Contains(_command))
-                return Spells.Drop;
+                _spell = Spells.Drop;
             else if (SpellDictionary.throwSpellDictionary.Contains(_command))
-                return Spells.Throw;
+                _spell = Spells.Throw;
             else if (SpellDictionary.captureSpellDictionary.Contains(_command))
-                return Spells.Capture;
+                _spell = Spells.Capture;
             else if (SpellDictionary.smashSpellDictionary.Contains(_command))
-                return Spells.Smash;
+                _spell = Spells.Smash;
             else if (SpellDictionary.attackSpellDictionary.Contains(_command))
-                return Spells.Attack;
+                _spell = Spells.Attack;
 
-            return Spells.None;
+            GameManager.Instance.uiController.SetCommandText(_spell == Spells.None ?
+                _command : _spell.ToString(), _spell != Spells.None);
+            return _spell;
         }
     }
 }

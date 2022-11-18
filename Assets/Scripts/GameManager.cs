@@ -44,6 +44,8 @@ namespace SpellBind
         public System.Action onSpellBombThrow;
         public System.Action onSpellBombExplode;
         public System.Action onPlayerDefend;
+        public System.Action onMicStart;
+        public System.Action onMicStop;
         #endregion
 
         private void Awake()
