@@ -76,7 +76,7 @@ namespace SpellBind
         // Start is called before the first frame update
         void Start()
         {
-            StartTutorial();
+            //StartTutorial();
             //StartLevel(1);
         }
 

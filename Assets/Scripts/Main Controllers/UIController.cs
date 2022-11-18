@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using TMPro;
 using System.Text.RegularExpressions;
 using System.Linq;
@@ -10,7 +11,11 @@ namespace SpellBind
 {
     public class UIController : MonoBehaviour
     {
-        [Header("UI REFERENCES")]
+        [Header("MAIN CANVAS REFERENCES")]
+        [SerializeField] private GameObject mainCanvas;
+        [SerializeField] private GameObject startButton;
+
+        [Header("TABLE CANVAS REFERENCES")]
         [SerializeField] private TextMeshProUGUI headerText;
         [SerializeField] private Image playerHealthBar;
         [SerializeField] private GameObject spellBombArrowAlert;
@@ -19,6 +24,13 @@ namespace SpellBind
         [Header("SFX REFERENCES")]
         [SerializeField] private AudioSource uiAudioSource;
         [SerializeField] private AudioClip scribbleSFX;
+        [SerializeField] private AudioClip uiSelectSFX;
+
+        [Header("HAND TRACKING REFERENCES")]
+        [SerializeField] private OVRHand hand;
+        [SerializeField] private OVRInputModule inputModule;
+        [SerializeField] private LineRenderer uiPointerLineRenderer; 
+        [SerializeField] private MeshRenderer uiPointerCursor; 
 
         private GameManager gameManager;
         private PlayerController player;
@@ -28,8 +40,10 @@ namespace SpellBind
         {
             gameManager= GameManager.Instance;
             player = gameManager.playerController;
+            inputModule.rayTransform = hand.PointerPose;
 
-            //DisplayUIMessage("Lorem Ipsum is simply dummy text of the printing and typesetting industry.", 7);
+            mainCanvas.SetActive(true);
+            ToggleHandUISelection(true);
         }
 
         // Update is called once per frame
@@ -82,7 +96,12 @@ namespace SpellBind
             spellBombMarker.SetActive(_toggleOn);
         }
 
-        private void PlayUISFX(AudioClip _clip, float _volume = 0.4f)
+        /// <summary>
+        /// Plays the given audio clip on the UI audio source
+        /// </summary>
+        /// <param name="_clip"></param>
+        /// <param name="_volume"></param>
+        public void PlayUISFX(AudioClip _clip, float _volume = 0.4f)
         {
             uiAudioSource.Stop();
             uiAudioSource.clip = _clip;
@@ -90,9 +109,33 @@ namespace SpellBind
             uiAudioSource.Play();
         }
 
+        /// <summary>
+        /// Stops the UI audio
+        /// </summary>
         private void StopUISFX()
         {
             uiAudioSource.Stop();
+        }
+
+        /// <summary>
+        /// Is called when "Start" button is clicked on UI
+        /// </summary>
+        public void OnStartButtonClick()
+        {
+            PlayUISFX(uiSelectSFX, 0.75f);
+            gameManager.StartTutorial();
+            ToggleHandUISelection(false);
+            mainCanvas.SetActive(false);
+        }
+
+        /// <summary>
+        /// Toggles Hands UI selection on/off
+        /// </summary>
+        /// <param name="_enable"></param>
+        public void ToggleHandUISelection(bool _enable)
+        {
+            uiPointerLineRenderer.enabled = _enable;
+            uiPointerCursor.enabled= _enable;
         }
     }
 }
