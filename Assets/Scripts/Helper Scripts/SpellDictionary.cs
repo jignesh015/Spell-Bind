@@ -15,7 +15,7 @@ namespace SpellBind
             "like", "bike", "mike", "spike", "reply", "goodbye", "polite", "police", "follow",
             "follower", "hey", "blank", "snipe", "say", "free", "faye", "spray", "day", "today",
             "gay", "grey", "gray", "yeah", "frank", "flow", "faint", "fight", "fright", "lie",
-            "july", "lay"
+            "july", "lay", "yell"
         };
         public static List<string> dropSpellDictionary = new List<string>()
         {
@@ -43,7 +43,7 @@ namespace SpellBind
             "smash", "dash", "smell", "smack", "snack", "snooze", "splash", "clash",
             "smashed", "mash", "mesh", "mashed", "flash", "message", "massage", "snap",
             "sma", "flesh", "stretch", "stress", "slash", "smudge", "crash", "shed",
-            "nash", "cash"
+            "nash", "cash", "match", "smart"
         };
         public static List<string> attackSpellDictionary = new List<string>()
         {
@@ -61,7 +61,8 @@ namespace SpellBind
             "arta", "altar", "ofat", "offat", "ofa", "offa", "sofa", "mydad",
             "mytime", "hiken", "again", "hiking", "haiku", "attend", "attain",
             "obtain", "icant", "idont", "ican", "acan", "affair", "afair",
-            "ahair", "achair", "ahead", "imdone", "adate", "added", "add"
+            "ahair", "achair", "ahead", "imdone", "adate", "added", "add",
+            "attempt", "attempted", "ourdad"
         };
     }
 }

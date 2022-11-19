@@ -1023,7 +1023,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   wandActionController: {fileID: 635381100}
-  spellDebugText: {fileID: 475906992}
 --- !u!4 &92563724
 Transform:
   m_ObjectHideFlags: 0
@@ -1284,7 +1283,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0.232, y: -0.185}
+  m_AnchoredPosition: {x: 0.232, y: -0.223}
   m_SizeDelta: {x: 0.6700001, y: 0.18409991}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &227711055

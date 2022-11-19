@@ -13,12 +13,15 @@ namespace SpellBind
         [SerializeField]
         private WandActionController wandActionController;
 
-        [Header("DEBUG")]
-        [SerializeField] private TextMeshProUGUI spellDebugText;
+        private Spells lastSpell;
+        private float lastSpellTime;
+        private float spellDelayLimit = 1.5f;
 
         // Start is called before the first frame update
         void Start()
         {
+            lastSpell = Spells.None;
+            lastSpellTime = 0;
         }
 
         private void OnDestroy()
@@ -41,9 +44,6 @@ namespace SpellBind
             if (!string.IsNullOrEmpty(_command))
             {
                 Spells _spell = ValidateSpell(_command);
-
-                Debug.LogFormat("Spell : {0}", _spell.ToString());
-                spellDebugText.color = Color.green;
 
                 switch (_spell)
                 {
@@ -72,7 +72,6 @@ namespace SpellBind
                         wandActionController.onAttackSpell.Invoke();
                         break;
                     default:
-                        spellDebugText.color = Color.red;
                         break;
                 }
             }
@@ -103,11 +102,9 @@ namespace SpellBind
         {
             //Remove special characters from the recognized command
             _command = Regex.Replace(_command, "[^a-zA-Z]+", "").ToLower();
-
-            Debug.LogFormat("Command Lower : {0}", _command);
-            spellDebugText.text = _command;
-            Spells _spell = Spells.None;
             
+            //Check if the spell dictionary contains the spoken command
+            Spells _spell = Spells.None;
             if (SpellDictionary.flySpellDictionary.Contains(_command))
                 _spell = Spells.Fly;
             else if (SpellDictionary.dropSpellDictionary.Contains(_command))
@@ -121,8 +118,25 @@ namespace SpellBind
             else if (SpellDictionary.attackSpellDictionary.Contains(_command))
                 _spell = Spells.Attack;
 
+            //Avoid command spam problem
+            float _timeSinceLastSpell = Time.time - lastSpellTime;
+            Debug.LogFormat("<color={3}>Current Spell : {0} | Last Spell : {1} | Time Diff : {2}</color>",
+                _spell.ToString(), lastSpell.ToString(), _timeSinceLastSpell.ToString("F2"),
+                (_timeSinceLastSpell < spellDelayLimit) ? "orange" : "lime");
+
+            if (_spell == lastSpell && _timeSinceLastSpell < spellDelayLimit)
+            {
+                return Spells.None;
+            }
+
+            //Set last spell and spell time
+            lastSpell = _spell;
+            lastSpellTime = Time.time;
+
+            //Set the spoken command to the UI indicator
             GameManager.Instance.uiController.SetCommandText(_spell == Spells.None ?
                 _command : _spell.ToString(), _spell != Spells.None);
+            
             return _spell;
         }
     }
