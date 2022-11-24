@@ -36,6 +36,8 @@ namespace SpellBind
         private UIController uiController;
         private WandActionController wandController;
 
+        private bool isTutorialEnabled;
+
         // Start is called before the first frame update
         void Start()
         {
@@ -56,6 +58,8 @@ namespace SpellBind
         // Update is called once per frame
         void Update()
         {
+            if (!isTutorialEnabled) return;
+
             #region ATTACK TUTORIAL
             if (currentSpellTutorial == SpellTutorial.Attack)
             {
@@ -192,6 +196,9 @@ namespace SpellBind
 
             currentSpellTutorial = SpellTutorial.Attack;
             gameManager.playerController.disableDefense = true;
+
+            //Enable tutorial
+            isTutorialEnabled = true;
 
             //Start attack tutorial
             StartCoroutine(AttackTutorial(0));
@@ -332,6 +339,7 @@ namespace SpellBind
                     break;
                 case 2:
                     //Tutorial Complete
+                    isTutorialEnabled = false;
                     currentSpellTutorial = SpellTutorial.Done;
                     yield return StartCoroutine(DisplayUIMessage(UIMessageDictionary.tutorialTextOutro, 2, 0));
                     break;

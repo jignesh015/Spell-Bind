@@ -1,6 +1,7 @@
 using Oculus.Platform.Samples.VrBoardGame;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace SpellBind
@@ -96,6 +97,13 @@ namespace SpellBind
         {
             playerController.ResetPlayer();
             levelController.InitializeLevel(1);
+
+            //Show wand
+            wandActionController.ToggleWandVisibility(true);
+
+            //Show In-Game UI message
+            uiController.DisplayUIMessage(UIMessageDictionary.inGameMessage.ElementAt(0).Key,
+                UIMessageDictionary.inGameMessage.ElementAt(0).Value);
         }
 
         /// <summary>

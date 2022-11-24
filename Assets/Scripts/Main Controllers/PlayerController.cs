@@ -6,6 +6,7 @@ using System.Globalization;
 using Oculus.Interaction.Input;
 using UnityEditor;
 using UnityEngine.UI;
+using System.Linq;
 
 namespace SpellBind
 {
@@ -25,28 +26,16 @@ namespace SpellBind
         public float defenseGestureYThreshold = 0.3f;
         public float minDefenseDuration = 0.5f;
         public float maxDefenseDuration = 5f;
-        [SerializeField] private Slider defenseTimerSlider;
         [SerializeField] private GameObject defenseForceField;
         [SerializeField] private AudioClip forceFieldOnSFX;
         [SerializeField] private AudioClip forceFieldErrorSFX;
         [HideInInspector] public bool disableDefense;
 
         [Header("PLAYER COLLIDER")]
-        [SerializeField] private CapsuleCollider playerCollider;
         [SerializeField] private float playerColliderOffset;
-        [SerializeField] private Transform playerHeadset;
 
         [Header("PLAYER DAMAGE")]
         [SerializeField] private Animator damageAnim;
-
-        [Header("PLAYER HAND REFERENCES")]
-        [SerializeField] private OVRHand ovrHandLeft;
-        [SerializeField] private OVRHand ovrHandRight;
-        [SerializeField] private OVRSkeleton ovrSkeletonLeft;
-        [SerializeField] private OVRSkeleton ovrSkeletonRight;
-
-        [Header("PLAYER HAND DEBUG")]
-        [SerializeField] private List<TextMeshProUGUI> debugTexts;
 
         #region PRIVATE VARIABLES
         private Enemies enemyToAttack;
@@ -58,21 +47,44 @@ namespace SpellBind
 
         private GameManager gameManager;
         private AudioSource playerAudioSource;
+
+        //Player References
+        private Slider defenseTimerSlider;
+        private CapsuleCollider playerCollider;
+        private Transform playerHeadset;
+        private OVRSkeleton ovrSkeletonLeft;
+        private OVRSkeleton ovrSkeletonRight;
+
         #endregion
 
         private void Awake()
         {
+            //Get component references
             gameManager = GameManager.Instance;
             playerAudioSource = GetComponent<AudioSource>();
 
-            float _yOffset = playerColliderOffset;
-            Vector3 _colliderPos = playerCollider.transform.position;
-#if UNITY_EDITOR
-            _yOffset = playerColliderOffset * -1;
-            damageAnim.transform.localScale = Vector3.one;
-#endif
-            playerCollider.transform.position = new Vector3(_colliderPos.x, _yOffset, _colliderPos.z);
+            //Get player references
+            defenseTimerSlider = FindObjectsOfType<Slider>(true).ToList().Find(x => x.gameObject.name.Equals("DefenseSlider"));
+            playerCollider = FindObjectsOfType<CapsuleCollider>().ToList().Find(x => x.gameObject.name.Equals("PlayerCapsule"));
+            playerHeadset = GameObject.Find("CenterEyeAnchor").transform;
+            ovrSkeletonLeft = FindObjectsOfType<OVRSkeleton>().ToList().Find(x => x.GetSkeletonType() == OVRSkeleton.SkeletonType.HandLeft);
+            ovrSkeletonRight = FindObjectsOfType<OVRSkeleton>().ToList().Find(x => x.GetSkeletonType() == OVRSkeleton.SkeletonType.HandRight);
+            
+            //Initialize gesture detection on left hand
+            FindObjectOfType<GestureDetector>().Initialize(ovrSkeletonLeft);
+
+//            //Apply offset to player collider
+//            float _yOffset = playerColliderOffset;
+//            Vector3 _colliderPos = playerCollider.transform.position;
+//#if UNITY_EDITOR
+//            _yOffset = playerColliderOffset * -1;
+//            damageAnim.transform.localScale = Vector3.one;
+//#endif
+//            playerCollider.transform.position = new Vector3(_colliderPos.x, _yOffset, _colliderPos.z);
             defenseTimer = maxDefenseDuration;
+
+            //Disable defense by default
+            disableDefense = true;
         }
 
         // Start is called before the first frame update
@@ -123,14 +135,8 @@ namespace SpellBind
 
                 //Set the defense timer slider value
                 defenseTimerSlider.value = defenseTimer / maxDefenseDuration;
-
-                DebugText(0, "isDefensiveGestureOn", isDefensiveGestureOn.ToString());
-                DebugText(1, "_yDiff", _yDiff.ToString());
-                DebugText(2, "defenseTimer", defenseTimer.ToString());
-                DebugText(3, "Wrist Root Pos", ovrSkeletonLeft.Bones[_startBoneId].Transform.position.ToString());
+                defenseTimerSlider.gameObject.SetActive(!disableDefense);
             }
-
-            
         }
 
         /// <summary>
@@ -239,19 +245,6 @@ namespace SpellBind
         }
 
         /// <summary>
-        /// This function displays the debug message for development purpose
-        /// </summary>
-        /// <param name="_label"></param>
-        /// <param name="_message"></param>
-        private void DebugText(int _index,string _label, string _message)
-        {
-            if (_index < debugTexts.Count)
-                debugTexts[_index].text = string.Format("{0}\n{1}", _label, _message);
-            else
-                Debug.LogError("Debug Text out of range");
-        }
-
-        /// <summary>
         /// This function sets the bool to true if defensive gesture is performed by the player
         /// </summary>
         /// <param name="_isOn"></param>
@@ -265,6 +258,7 @@ namespace SpellBind
         /// </summary>
         public void ResetPlayer()
         {
+            disableDefense = false;
             currentPlayerHealth = maxPlayerHealth;
         }
     }

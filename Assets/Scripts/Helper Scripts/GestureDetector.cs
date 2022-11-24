@@ -46,26 +46,28 @@ namespace SpellBind
 
         void Start()
         {
-            StartCoroutine(DelayRoutine(2.5f, Initialize));
         }
 
-        private IEnumerator DelayRoutine(float delay, Action actionToDo)
+        public void Initialize(OVRSkeleton _skeleton)
+        {
+            StartCoroutine(InitializeAsync(_skeleton, 2.5f));
+            
+        }
+
+        private IEnumerator InitializeAsync(OVRSkeleton _skeleton ,float delay)
         {
             yield return new WaitForSeconds(delay);
-            actionToDo.Invoke();
-        }
-
-        private void Initialize()
-        {
-            SetSkeleton();
+            SetSkeleton(_skeleton);
 
             // After initializing the skeleton set a boolean to true to confirm the initialization
             hasStarted = true;
         }
-        private void SetSkeleton()
+
+        private void SetSkeleton(OVRSkeleton _skeleton)
         {
             // Populate the private list of fingerbones from the current hand we put in the skeleton
-            fingerbones = new List<OVRBone>(skeleton.Bones);
+            skeleton= _skeleton;
+            fingerbones = new List<OVRBone>(_skeleton.Bones);
         }
 
         void Update()

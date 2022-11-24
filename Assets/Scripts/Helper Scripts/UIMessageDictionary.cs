@@ -69,5 +69,12 @@ namespace SpellBind
             { "Congrats Harry,\nyou're a wizard now!", 3f }
         };
         #endregion
+
+        #region IN GAME MESSAGES
+        public static Dictionary<string, float> inGameMessage = new Dictionary<string, float>()
+        {
+            { "Clear the level by destroying all the dementors!", 2f },
+        };
+        #endregion
     }
 }

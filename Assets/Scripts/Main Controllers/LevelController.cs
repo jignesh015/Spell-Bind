@@ -52,7 +52,7 @@ namespace SpellBind
             {
                 gameManager.SpawnEnemy(enemiesToSpawn[numOfEnemiesSpawned]);
                 lastEnemySpawnTime = Time.time;
-                nextEnemySpawnDelay = UnityEngine.Random.Range(currentLevel.minEnemySpawnGap, currentLevel.maxEnemySpawnGap);
+                nextEnemySpawnDelay = Random.Range(currentLevel.minEnemySpawnGap, currentLevel.maxEnemySpawnGap);
                 numOfEnemiesSpawned++;
             }
 

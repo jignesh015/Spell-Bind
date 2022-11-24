@@ -92,7 +92,7 @@ MonoBehaviour:
   shotCount: 1
   flyOffset: 0.1
   flyTime: 0.5
-  followWandSpeed: 5
+  followWandSpeed: 2
   throwSpeed: 10
   bombBackToSpawnSpeed: 5
   alertNotification: {fileID: 8300000, guid: bfdebe9a08e75564688369a60cff8117, type: 3}

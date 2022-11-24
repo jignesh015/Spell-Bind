@@ -22,6 +22,9 @@ namespace SpellBind
         [SerializeField] private GameObject spellBombMarker;
         [SerializeField] private GameObject micIndicator;
 
+        [Header("HUD CANVAS REFERENCES")]
+        [SerializeField] private Canvas hudCanvas;
+
         [Header("COMMAND TEXT REFERENCES")]
         [SerializeField] private TextMeshProUGUI commandText;
         [SerializeField] private float activeFontSize;
@@ -44,15 +47,22 @@ namespace SpellBind
         private GameManager gameManager;
         private PlayerController player;
 
+        private void Awake()
+        {
+            inputModule.rayTransform = FindObjectsOfType<OVRHand>().ToList().Find(x => x.name.Contains("Right")).PointerPose;
+        }
+
         // Start is called before the first frame update
         void Start()
         {
             gameManager= GameManager.Instance;
             player = gameManager.playerController;
-            inputModule.rayTransform = hand.PointerPose;
 
             mainCanvas.SetActive(true);
             ToggleHandUISelection(true);
+
+            //Set HUD Canvas camera
+            hudCanvas.worldCamera = GameObject.Find("CenterEyeAnchor").GetComponent<Camera>();
         }
 
         // Update is called once per frame
@@ -132,7 +142,8 @@ namespace SpellBind
         public void OnStartButtonClick()
         {
             PlayUISFX(uiSelectSFX, 0.75f);
-            gameManager.StartTutorial();
+            //gameManager.StartTutorial();
+            gameManager.StartLevel(1);
             ToggleHandUISelection(false);
             mainCanvas.SetActive(false);
         }

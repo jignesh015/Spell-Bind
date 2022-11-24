@@ -43,7 +43,7 @@ namespace SpellBind
             "smash", "dash", "smell", "smack", "snack", "snooze", "splash", "clash",
             "smashed", "mash", "mesh", "mashed", "flash", "message", "massage", "snap",
             "sma", "flesh", "stretch", "stress", "slash", "smudge", "crash", "shed",
-            "nash", "cash", "match", "smart"
+            "nash", "cash", "match", "smart", "mate"
         };
         public static List<string> attackSpellDictionary = new List<string>()
         {
