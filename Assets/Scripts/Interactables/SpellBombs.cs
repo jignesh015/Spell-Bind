@@ -58,6 +58,8 @@ namespace SpellBind
             rigidBody.velocity = Vector3.zero;
             spellBombState = SpellBombState.Idle;
             interactableType = InteractableType.SpellBomb;
+            audioSource.loop= false;
+            audioSource.Stop();
         }
 
         // Update is called once per frame

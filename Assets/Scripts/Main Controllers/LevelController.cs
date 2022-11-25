@@ -27,12 +27,19 @@ namespace SpellBind
         private float nextSpellBombSpawnDelay;
         private bool startSpawningSpellBombs;
 
+        //Level Complete variables
+        private int enemiesKilledCount;
+        private bool isLevelComplete;
+
         private GameManager gameManager;
 
         // Start is called before the first frame update
         void Start()
         {
             gameManager = GameManager.Instance;
+
+            //Add delegates
+            gameManager.onEnemyKilled += IncrementEnemyKilledCount;
             gameManager.onSpellBombExplode += UpdateSpellBombExplodeTime;
         }
 
@@ -41,7 +48,9 @@ namespace SpellBind
         {
             if (gameManager == null || currentLevel == null) return;
 
-            if (gameManager.IsGameOver()) return;
+            if (!gameManager.hasLevelStarted) return;
+
+            if (gameManager.IsGameOver() || isLevelComplete) return;
 
             //Spawn all enemies with some amount of gap between them
             //Also make sure that the total number of enemies alive at a time 
@@ -56,21 +65,34 @@ namespace SpellBind
                 numOfEnemiesSpawned++;
             }
 
+            //Spawn spell bomb at regular intervals
             if(startSpawningSpellBombs && gameManager.spawnedSpellBombs.Count == 0
                 && (Time.time - lastSpellBombExplodeTime) > nextSpellBombSpawnDelay)
             {
                 gameManager.SpawnBomb(nextSpellBombToSpawn);
                 SetSpellBombToSpawn();
             }
+
+            //Check for level complete
+            if(enemiesToSpawn.Count > 0 && enemiesKilledCount == enemiesToSpawn.Count && !isLevelComplete)
+            {
+                LevelComplete();
+            }
         }
 
+        /// <summary>
+        /// Initalizes the given level
+        /// </summary>
+        /// <param name="_levelNo"></param>
         public void InitializeLevel(int _levelNo)
         {
             if(gameManager == null) gameManager = GameManager.Instance;
             currentLevel = levels[_levelNo - 1];
+            isLevelComplete = false;
 
             //Set enemy spawn variables
             numOfEnemiesSpawned = 0;
+            enemiesKilledCount = 0;
             lastEnemySpawnTime = Time.time;
             nextEnemySpawnDelay = currentLevel.minEnemySpawnGap / 2f;
 
@@ -85,11 +107,18 @@ namespace SpellBind
             startSpawningSpellBombs = currentLevel.spellBombTypes.Count > 0;
         }
 
+        /// <summary>
+        /// Returns current level
+        /// </summary>
+        /// <returns></returns>
         public Level GetCurrentLevel() 
         {
             return currentLevel;
         }
 
+        /// <summary>
+        /// Sets the list for enemies to be spawned
+        /// </summary>
         private void EnemiesToSpawn() 
         {
             enemiesToSpawn = new List<EnemyType>();
@@ -104,6 +133,9 @@ namespace SpellBind
             enemiesToSpawn = enemiesToSpawn.OrderBy(e => UnityEngine.Random.value).ToList();
         }
 
+        /// <summary>
+        /// Sets the next bomb to be spawned
+        /// </summary>
         private void SetSpellBombToSpawn()
         {
             if (currentLevel.spellBombTypes.Count == 0) return;
@@ -113,9 +145,36 @@ namespace SpellBind
                 s.spellBombType.Equals(nextSpellBombToSpawn)).spawnRate;
         }
 
+        /// <summary>
+        /// Is called when the player kills an enemy
+        /// </summary>
+        private void IncrementEnemyKilledCount()
+        {
+            enemiesKilledCount++;
+        }
+
+        /// <summary>
+        /// Updates the spell bomb explode time
+        /// </summary>
         public void UpdateSpellBombExplodeTime()
         {
             lastSpellBombExplodeTime= Time.time;
+        }
+
+        /// <summary>
+        /// Is called when all the enmies are killed
+        /// </summary>
+        public void LevelComplete()
+        {
+            isLevelComplete= true;
+            Debug.LogFormat("<color=red>LevelComplete {0} | {1}</color>", numOfEnemiesSpawned, enemiesToSpawn.Count);
+            StartCoroutine(LevelCompleteAsync());
+        }
+
+        private IEnumerator LevelCompleteAsync()
+        {
+            yield return new WaitForSeconds(1f);
+            gameManager.onLevelComplete?.Invoke();
         }
     }
 }

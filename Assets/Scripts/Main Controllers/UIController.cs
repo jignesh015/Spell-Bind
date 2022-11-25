@@ -12,8 +12,7 @@ namespace SpellBind
     public class UIController : MonoBehaviour
     {
         [Header("MAIN CANVAS REFERENCES")]
-        [SerializeField] private GameObject mainCanvas;
-        [SerializeField] private GameObject startButton;
+        [SerializeField] private Animator mainCanvasAnim;
 
         [Header("TABLE CANVAS REFERENCES")]
         [SerializeField] private TextMeshProUGUI headerText;
@@ -58,8 +57,7 @@ namespace SpellBind
             gameManager= GameManager.Instance;
             player = gameManager.playerController;
 
-            mainCanvas.SetActive(true);
-            ToggleHandUISelection(true);
+            HandleMainCanvas(1);
 
             //Set HUD Canvas camera
             hudCanvas.worldCamera = GameObject.Find("CenterEyeAnchor").GetComponent<Camera>();
@@ -107,6 +105,35 @@ namespace SpellBind
         }
 
         /// <summary>
+        /// Handles the Main Canvas screens
+        /// | 0 = Idle | 1 = Start Screen | 2 = Continue Screen | 3 = End Screen | 4 = Game Over Screen
+        /// </summary>
+        /// <param name="_index"></param>
+        public void HandleMainCanvas(int _index)
+        {
+            string _animTrigger = "Idle";
+            switch(_index)
+            {
+                case 0:
+                    break;
+                case 1:
+                    _animTrigger = "StartScreen";
+                    break;
+                case 2:
+                    _animTrigger = "ContinueScreen";
+                    break;
+                case 3:
+                    _animTrigger = "EndScreen";
+                    break;
+                case 4:
+                    _animTrigger = "GameOverScreen";
+                    break;
+            }
+            mainCanvasAnim.SetTrigger(_animTrigger);
+            ToggleHandUISelection(_index != 0);
+        }
+
+        /// <summary>
         /// Toggles the Arrow UI to alert player of the spawned spell bomb
         /// </summary>
         public void ToggleSpellBombArrowAlert(bool _toggleOn)
@@ -142,10 +169,39 @@ namespace SpellBind
         public void OnStartButtonClick()
         {
             PlayUISFX(uiSelectSFX, 0.75f);
-            //gameManager.StartTutorial();
+            gameManager.StartTutorial();
+            //gameManager.StartLevel(1);
+            HandleMainCanvas(0);
+        }
+
+        /// <summary>
+        /// Is called when "Continue" button is clicked on UI
+        /// </summary>
+        public void OnContinueButtonClick()
+        {
+            PlayUISFX(uiSelectSFX, 0.75f);
             gameManager.StartLevel(1);
-            ToggleHandUISelection(false);
-            mainCanvas.SetActive(false);
+            HandleMainCanvas(0);
+        }
+
+        /// <summary>
+        /// Is called when "Replay" Button is clicked on UI
+        /// </summary>
+        public void OnReplayButtonClicked()
+        {
+            PlayUISFX(uiSelectSFX, 0.75f);
+            gameManager.StartLevel(1);
+            HandleMainCanvas(0);
+        }
+
+        /// <summary>
+        /// Is called when "Relearn" Button is clicked on UI
+        /// </summary>
+        public void OnRelearnButtonClicked()
+        {
+            PlayUISFX(uiSelectSFX, 0.75f);
+            gameManager.StartTutorial();
+            HandleMainCanvas(0);
         }
 
         /// <summary>

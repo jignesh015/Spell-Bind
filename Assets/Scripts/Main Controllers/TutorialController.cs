@@ -38,6 +38,9 @@ namespace SpellBind
 
         private bool isTutorialEnabled;
 
+        [Header("DEBUG MODE")]
+        [SerializeField] private bool skipTutorial;
+
         // Start is called before the first frame update
         void Start()
         {
@@ -59,6 +62,14 @@ namespace SpellBind
         void Update()
         {
             if (!isTutorialEnabled) return;
+
+            if(skipTutorial)
+            {
+                //Stop the tutorial right away
+                StopAllCoroutines();
+                StartCoroutine(DefenseTutorial(2));
+            }
+
 
             #region ATTACK TUTORIAL
             if (currentSpellTutorial == SpellTutorial.Attack)
@@ -200,6 +211,9 @@ namespace SpellBind
             //Enable tutorial
             isTutorialEnabled = true;
 
+            //Set player health to zero
+            gameManager.playerController.currentPlayerHealth = 0;
+
             //Start attack tutorial
             StartCoroutine(AttackTutorial(0));
 
@@ -339,9 +353,11 @@ namespace SpellBind
                     break;
                 case 2:
                     //Tutorial Complete
+                    skipTutorial = false;
                     isTutorialEnabled = false;
                     currentSpellTutorial = SpellTutorial.Done;
                     yield return StartCoroutine(DisplayUIMessage(UIMessageDictionary.tutorialTextOutro, 2, 0));
+                    gameManager.OnTutorialComplete();
                     break;
             }
         }

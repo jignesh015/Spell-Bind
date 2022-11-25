@@ -8,9 +8,11 @@ namespace SpellBind
 {
     public class GameManager : MonoBehaviour
     {
+        [Header("LEVEL REFERENCES")]
         public int currentLevelNo;
         public List<Enemies> spawnedEnemies;
         public List<SpellBombs> spawnedSpellBombs;
+        [HideInInspector] public bool hasLevelStarted;
 
         [Header("SPELL BOMB SPAWN LOC")]
         [SerializeField] private List<Transform> spellBombSpawnLocation;
@@ -47,6 +49,8 @@ namespace SpellBind
         public System.Action onPlayerDefend;
         public System.Action onMicStart;
         public System.Action onMicStop;
+        public System.Action onPlayerDead;
+        public System.Action onLevelComplete;
         #endregion
 
         private void Awake()
@@ -74,6 +78,10 @@ namespace SpellBind
 
             //Toggle wand off
             wandActionController.ToggleWandVisibility(false);
+
+            //Add actions
+            onPlayerDead += OnGameOver;
+            onLevelComplete += OnLevelComplete;
         }
 
         // Start is called before the first frame update
@@ -95,8 +103,14 @@ namespace SpellBind
         /// <param name="_level"></param>
         public void StartLevel(int _level)
         {
+            //Reset Spawned Interactables before starting the level
+            ResetInteractables();
+
+            //Reset Player
             playerController.ResetPlayer();
-            levelController.InitializeLevel(1);
+
+            //Initialize given level
+            levelController.InitializeLevel(_level);
 
             //Show wand
             wandActionController.ToggleWandVisibility(true);
@@ -104,6 +118,9 @@ namespace SpellBind
             //Show In-Game UI message
             uiController.DisplayUIMessage(UIMessageDictionary.inGameMessage.ElementAt(0).Key,
                 UIMessageDictionary.inGameMessage.ElementAt(0).Value);
+
+            //Level has started
+            hasLevelStarted = true;
         }
 
         /// <summary>
@@ -111,7 +128,23 @@ namespace SpellBind
         /// </summary>
         public void StartTutorial()
         {
+            //Reset Spawned Interactables before starting the tutorial
+            ResetInteractables();
+
+            //Initialize tutorial
             tutorialController.InitializeTutorial();
+        }
+
+        /// <summary>
+        /// This function is called when the player completes the tutorial
+        /// </summary>
+        public void OnTutorialComplete()
+        {
+            //Show Continue UI
+            uiController.HandleMainCanvas(2);
+
+            //Turn off wand
+            wandActionController.ToggleWandVisibility(false);
         }
 
         /// <summary>
@@ -196,7 +229,45 @@ namespace SpellBind
         /// <returns></returns>
         public bool IsGameOver()
         {
+            if(playerController.currentPlayerHealth <= 0)
+                return true;
             return false;
+        }
+
+        /// <summary>
+        /// This function is called when player clears a level
+        /// </summary>
+        public void OnLevelComplete()
+        {
+            //Show End Screen UI
+            uiController.HandleMainCanvas(3);
+
+            //Turn off wand
+            wandActionController.ToggleWandVisibility(false);
+
+            //Reset Level Started
+            hasLevelStarted = false;
+
+            //Reset interactables
+            ResetInteractables();
+        }
+
+        /// <summary>
+        /// This function is called when the player dies
+        /// </summary>
+        public void OnGameOver()
+        {
+            //Show Game Over UI
+            uiController.HandleMainCanvas(4);
+
+            //Turn off wand
+            wandActionController.ToggleWandVisibility(false);
+
+            //Reset Level Started
+            hasLevelStarted = false;
+
+            //Reset interactables
+            ResetInteractables();
         }
         
         /// <summary>
@@ -259,6 +330,20 @@ namespace SpellBind
             if(spawnedSpellBombs.Count > 0 && spawnedSpellBombs.Contains(_bomb))
                 spawnedSpellBombs.Remove(_bomb);
             onSpellBombExplode?.Invoke();
+        }
+
+        /// <summary>
+        /// Resets all the spawned enemies and bomb
+        /// </summary>
+        public void ResetInteractables()
+        {
+            List<InteractableController> _interactables = FindObjectsOfType<InteractableController>(true).ToList();
+            foreach(InteractableController i in _interactables)
+            {
+                i.gameObject.SetActive(false);
+            }
+            spawnedEnemies = new List<Enemies>();
+            spawnedSpellBombs= new List<SpellBombs>();
         }
     }
 }

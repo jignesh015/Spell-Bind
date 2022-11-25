@@ -90,11 +90,26 @@ namespace SpellBind
 
             //Check if user is grabbing the wand
             //If not, lerp the wand to its origin point
-            if(!gameManager.playerController.isGrabbingWand && 
+            if((!gameManager.playerController.isGrabbingWand || !wandTransform.gameObject.activeSelf) && 
                 Vector3.Distance(wandTransform.position, wandOriginPoint.position) > 0.01f)
             {
                 wandTransform.position = Vector3.Lerp(wandTransform.position, wandOriginPoint.position, Time.deltaTime * wandLerpSpeed);
                 wandTransform.rotation = Quaternion.Lerp(wandTransform.rotation, wandOriginPoint.rotation, Time.deltaTime * wandLerpSpeed);
+            }
+
+            //If currently selected interactable is disabled, reset it
+            if(currentlySelectedInteractable != null && !currentlySelectedInteractable.gameObject.activeSelf)
+            {
+                currentlySelectedInteractable = null;
+                isControllingInteractable = false;
+            }
+
+            //If wand is disabled, disable the wand raycast as well
+            if(!wandTransform.gameObject.activeSelf)
+            {
+                wandRaycastRenderer.enabled = false;
+                gameManager.playerController.isGrabbingWand = false;
+                return;
             }
 
             if(gameManager.playerController.isGrabbingWand)

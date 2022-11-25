@@ -16,6 +16,7 @@ namespace SpellBind
         public int maxPlayerHealth;
         public int currentPlayerHealth;
         public bool isGrabbingWand;
+        public bool isPlayerDead;
 
         [Header("ATTACK SETTINGS")]
         public int minAttackDamage;
@@ -95,6 +96,11 @@ namespace SpellBind
         // Update is called once per frame
         void Update()
         {
+            if(currentPlayerHealth <= 0 && !isPlayerDead && gameManager.hasLevelStarted)
+            {
+                OnPlayerDead();
+            }
+
             if(ovrSkeletonLeft.GetCurrentNumBones() > 0 && ovrSkeletonLeft.Bones.Count > 0)
             {
                 //Get bone id of the wrist bone
@@ -253,11 +259,19 @@ namespace SpellBind
             isDefensiveGestureOn = _isOn;
         }
 
+
+        public void OnPlayerDead()
+        {
+            isPlayerDead = true;
+            gameManager.onPlayerDead?.Invoke();
+        }
+
         /// <summary>
         /// Resets the player variables
         /// </summary>
         public void ResetPlayer()
         {
+            isPlayerDead = false;
             disableDefense = false;
             currentPlayerHealth = maxPlayerHealth;
         }
