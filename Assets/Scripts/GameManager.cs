@@ -281,6 +281,14 @@ namespace SpellBind
             float _distanceToEnemy = Mathf.Abs(Vector3.Distance(_closestEnemy.position, _from));
             for (int i = 1; i < spawnedEnemies.Count; i++)
             {
+                //Prioritize buffed enemy type
+                if (spawnedEnemies[i].enemyType == EnemyType.Buffed)
+                {
+                    _closestEnemy = spawnedEnemies[i].transform;
+                    break;
+                }
+
+                //Else, find the closest enemy
                 float _newDist = Mathf.Abs(Vector3.Distance(spawnedEnemies[i].transform.position, _from));
                 if (_newDist < _distanceToEnemy)
                 {

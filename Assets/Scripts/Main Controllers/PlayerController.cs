@@ -37,6 +37,7 @@ namespace SpellBind
 
         [Header("PLAYER DAMAGE")]
         [SerializeField] private Animator damageAnim;
+        [SerializeField] private AudioClip damageSFX;
 
         #region PRIVATE VARIABLES
         private Enemies enemyToAttack;
@@ -96,10 +97,7 @@ namespace SpellBind
         // Update is called once per frame
         void Update()
         {
-            if(currentPlayerHealth <= 0 && !isPlayerDead && gameManager.hasLevelStarted)
-            {
-                OnPlayerDead();
-            }
+
 
             if(ovrSkeletonLeft.GetCurrentNumBones() > 0 && ovrSkeletonLeft.Bones.Count > 0)
             {
@@ -198,14 +196,21 @@ namespace SpellBind
         /// <param name="_damage"></param>
         public void OnPlayerAttacked(int _damage)
         {
+            //Reduce player health
             currentPlayerHealth -= _damage;
+
+            //Play Damage animation
             damageAnim.SetTrigger("Damage");
 
-            if (currentPlayerHealth < 0)
+            //Play Damage SFX
+            PlaySFX(damageSFX);
+
+            //Check if player is dead
+            if (currentPlayerHealth <= 0)
             {
                 currentPlayerHealth = 0;
-
-                //TODO: Game Over Logic
+                if (!isPlayerDead && gameManager.hasLevelStarted)
+                    OnPlayerDead();
             }    
         }
 

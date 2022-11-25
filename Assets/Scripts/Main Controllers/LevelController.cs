@@ -166,7 +166,7 @@ namespace SpellBind
         /// </summary>
         public void LevelComplete()
         {
-            isLevelComplete= true;
+            isLevelComplete = true;
             Debug.LogFormat("<color=red>LevelComplete {0} | {1}</color>", numOfEnemiesSpawned, enemiesToSpawn.Count);
             StartCoroutine(LevelCompleteAsync());
         }

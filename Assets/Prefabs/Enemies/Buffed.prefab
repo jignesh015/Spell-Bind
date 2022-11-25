@@ -162,6 +162,11 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 2d6b0e3c04dbd1042a75ad37c8691092, type: 2}
+    - target: {fileID: 5676652395535969224, guid: d4f31dcbd7899a64b985c22d1b5c42f5,
+        type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: 0340d4fbd41710f4987e40bb72052c6f, type: 2}
     - target: {fileID: 5676652395535969225, guid: d4f31dcbd7899a64b985c22d1b5c42f5,
         type: 3}
       propertyPath: InitialModule.startColor.maxColor.b
@@ -176,6 +181,36 @@ PrefabInstance:
         type: 3}
       propertyPath: InitialModule.startColor.maxColor.r
       value: 0.9803922
+      objectReference: {fileID: 0}
+    - target: {fileID: 5676652395535969225, guid: d4f31dcbd7899a64b985c22d1b5c42f5,
+        type: 3}
+      propertyPath: TrailModule.colorOverTrail.maxColor.b
+      value: 0.2592365
+      objectReference: {fileID: 0}
+    - target: {fileID: 5676652395535969225, guid: d4f31dcbd7899a64b985c22d1b5c42f5,
+        type: 3}
+      propertyPath: TrailModule.colorOverTrail.maxColor.g
+      value: 0.12198288
+      objectReference: {fileID: 0}
+    - target: {fileID: 5676652395535969225, guid: d4f31dcbd7899a64b985c22d1b5c42f5,
+        type: 3}
+      propertyPath: TrailModule.colorOverTrail.maxColor.r
+      value: 0.8396226
+      objectReference: {fileID: 0}
+    - target: {fileID: 5676652395535969225, guid: d4f31dcbd7899a64b985c22d1b5c42f5,
+        type: 3}
+      propertyPath: TrailModule.colorOverLifetime.maxColor.b
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5676652395535969225, guid: d4f31dcbd7899a64b985c22d1b5c42f5,
+        type: 3}
+      propertyPath: TrailModule.colorOverLifetime.maxColor.g
+      value: 0.2627451
+      objectReference: {fileID: 0}
+    - target: {fileID: 5676652395535969225, guid: d4f31dcbd7899a64b985c22d1b5c42f5,
+        type: 3}
+      propertyPath: TrailModule.colorOverLifetime.maxColor.r
+      value: 0.98039216
       objectReference: {fileID: 0}
     - target: {fileID: 6550543382984875969, guid: d4f31dcbd7899a64b985c22d1b5c42f5,
         type: 3}

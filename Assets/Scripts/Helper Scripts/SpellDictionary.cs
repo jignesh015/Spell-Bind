@@ -15,7 +15,7 @@ namespace SpellBind
             "like", "bike", "mike", "spike", "reply", "goodbye", "polite", "police", "follow",
             "follower", "hey", "blank", "snipe", "say", "free", "faye", "spray", "day", "today",
             "gay", "grey", "gray", "yeah", "frank", "flow", "faint", "fight", "fright", "lie",
-            "july", "lay", "yell"
+            "july", "lay", "yell", "smile", "guy", "itslike", "style", "slide"
         };
         public static List<string> dropSpellDictionary = new List<string>()
         {
@@ -62,7 +62,7 @@ namespace SpellBind
             "mytime", "hiken", "again", "hiking", "haiku", "attend", "attain",
             "obtain", "icant", "idont", "ican", "acan", "affair", "afair",
             "ahair", "achair", "ahead", "imdone", "adate", "added", "add",
-            "attempt", "attempted", "ourdad"
+            "attempt", "attempted", "ourdad", "hungry"
         };
     }
 }

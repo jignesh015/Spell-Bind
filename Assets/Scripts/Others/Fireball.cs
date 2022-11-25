@@ -46,6 +46,11 @@ namespace SpellBind
             }
         }
 
+        private void OnDisable()
+        {
+            rigidBody.velocity = Vector3.zero;
+        }
+
         public void Attack(Vector3 _startPos, Vector3 _victimPos, int _damage, float _speed)
         {
             transform.position = _startPos;

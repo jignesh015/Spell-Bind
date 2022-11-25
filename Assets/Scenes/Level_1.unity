@@ -15091,6 +15091,7 @@ MonoBehaviour:
   disableDefense: 0
   playerColliderOffset: 0
   damageAnim: {fileID: 407446686}
+  damageSFX: {fileID: 8300000, guid: 9c8183f9b2f7e7b4aad26debafc8c45c, type: 3}
 --- !u!114 &1934814762
 MonoBehaviour:
   m_ObjectHideFlags: 0
